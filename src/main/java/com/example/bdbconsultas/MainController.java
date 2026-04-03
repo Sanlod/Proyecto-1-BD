@@ -2,11 +2,20 @@ package com.example.bdbconsultas;
 
 import com.example.bdbconsultas.DAOs.AssociationDAO;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+
+import java.sql.Types;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 
 public class MainController extends Application {
 
@@ -19,28 +28,19 @@ public class MainController extends Application {
     ///
 
 
-    public TableView tableView;
+    public TableView<ObservableList<String>> tabla;
+    public TableColumn<ObservableList<String>, String> id;
+    public TableColumn<ObservableList<String>, String> name;
+    public TableColumn<ObservableList<String>, String> state;
+
 
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("Tabla.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 932, 608);
-        stage.setTitle("Ojalamemuerahoyoigualynoxdxdxd!");
+        stage.setTitle("Ventana");
         stage.setScene(scene);
         stage.show();
-
-
-
-        TableColumn<String, String> idCol = new TableColumn<>("ID");
-        //idCol.setCellValueFactory(data ->
-             //   new javafx.beans.property.SimpleStringProperty(Integer.toString(data.getValue().getId())));
-
-        TableColumn<String, String> nomCol = new TableColumn<>("NOME");
-        //idCol.setCellValueFactory(data ->
-              //  new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
-
-        tableView.getColumns().addAll(idCol, nomCol);
-        tableView.setItems(AssociationDAO.getAssociations());
 
     }
     public static void main(String[] args) {

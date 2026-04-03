@@ -9,14 +9,14 @@ public class AssociationDAO {
         ObservableList<String> associations = FXCollections.observableArrayList();
         try{
             Connection conn = DBConnection.getConnection();
-            String query = "SELECT * FROM association";
+            String query = "SELECT * FROM Pet";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
             while(rs.next()){
                 associations.add(
                         rs.getInt("ID"),
-                        rs.getString("NOMBRE")
+                        rs.getString("NAME")
                 );
             }
             conn.close();
