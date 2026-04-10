@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BitacoraDAO {
@@ -42,4 +43,61 @@ public class BitacoraDAO {
         }
         return filas;
     }
-}
+
+        public static ObservableList<ObservableList<String>> getUsuarios()
+                throws SQLException, ClassNotFoundException {
+            return listadosCatalogo("SP_LISTAR_USUARIOS_BITACORA");
+        }
+
+        public static ObservableList<ObservableList<String>> getTablas()
+                throws SQLException, ClassNotFoundException {
+            return listadosCatalogo("SP_LISTAR_TABLAS_BITACORA");
+        }
+
+        public static ResultadoConsulta consultarBitacora(
+                String idUsuario,
+                String tabla,
+                String fecha) throws SQLException, ClassNotFoundException {
+
+            List<String> columnas = new ArrayList<>();
+            ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
+            int total = 0;
+
+            try (Connection conn = DBConnection.getConnection();
+                 CallableStatement cs = conn.prepareCall("{ CALL SP_CONSULTAR_BITACORA(?,?,?,?,?) }")) {
+
+                cs.setString(1, idUsuario.isEmpty() ? null : idUsuario);
+                cs.setString(2, tabla.isEmpty()     ? null : tabla);
+
+                if (fecha != null && !fecha.isEmpty())
+                    cs.setTimestamp(3, Timestamp.valueOf(fecha + " 00:00:00"));
+                else
+                    cs.setNull(3, Types.TIMESTAMP);
+
+                cs.registerOutParameter(4, Types.REF_CURSOR);
+                cs.registerOutParameter(5, Types.NUMERIC);
+
+                cs.execute();
+
+                total = cs.getInt(5);
+
+                try (ResultSet rs = (ResultSet) cs.getObject(4)) {
+                    ResultSetMetaData meta = rs.getMetaData();
+                    int numCols = meta.getColumnCount();
+                    for (int i = 1; i <= numCols; i++) {
+                        columnas.add(meta.getColumnLabel(i));
+                    }
+                    while (rs.next()) {
+                        ObservableList<String> fila = FXCollections.observableArrayList();
+                        for (int i = 1; i <= numCols; i++) {
+                            Object val = rs.getObject(i);
+                            fila.add(val != null ? val.toString() : "");
+                        }
+                        filas.add(fila);
+                    }
+                }
+            }
+            return new BitacoraDAO.ResultadoConsulta(columnas, filas, total);
+        }
+    }
+

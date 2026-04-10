@@ -19,5 +19,6 @@
       <Spinner layoutX="28.0" layoutY="428.0" />
       <Button layoutX="190.0" layoutY="428.0" mnemonicParsing="false" text="Ejecutar" />
       <Button layoutX="785.0" layoutY="25.0" mnemonicParsing="false" text="Volver" />
+      <Text layoutX="28.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Posibles coincidencias" />
    </children>
 </AnchorPane>

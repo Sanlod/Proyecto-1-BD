@@ -1,4 +1,6 @@
 package com.example.bdbconsultas;
+import com.example.bdbconsultas.DAOs.AssociationDAO;
+import com.example.bdbconsultas.DAOs.PersonaDAO;
 import javafx.collections.*;
 import javafx.util.StringConverter;
 import javafx.fxml.FXML;
@@ -39,7 +41,7 @@ public class DonacionesController {
 
             // Opción "Todos" con ID vacío
             items.add(FXCollections.observableArrayList("", "Todos"));
-            items.addAll(DonacionesDAO.getPersonas());
+            items.addAll(PersonaDAO.getPersonas());
 
             cbDonador.setItems(items);
             cbDonador.getSelectionModel().selectFirst();
@@ -70,7 +72,7 @@ public class DonacionesController {
 
             // Opción "Todos" con ID vacío
             items.add(FXCollections.observableArrayList("", "Todos"));
-            items.addAll(DonacionesDAO.getAsociaciones());
+            items.addAll(AssociationDAO.getAsociaciones());
 
             cbAsociacion.setItems(items);
             cbAsociacion.getSelectionModel().selectFirst();
