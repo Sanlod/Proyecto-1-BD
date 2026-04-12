@@ -1,0 +1,95 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.bdbconsultas.EstadisticasAdoptionController"
+            prefWidth="900" prefHeight="620">
+
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+    <top>
+        <VBox spacing="16">
+
+            <Label text="Estadísticas de adopciones"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <!-- Filtros -->
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-border-color: #e0e0e0;
+                         -fx-border-radius: 8; -fx-background-radius: 8;
+                         -fx-padding: 12 16 12 16;">
+                <Label text="Desde"/>
+                <DatePicker fx:id="dpStartDate" prefWidth="140"/>
+                <Label text="Hasta"/>
+                <DatePicker fx:id="dpEndDate" prefWidth="140"/>
+                <Label text="Tipo"/>
+                <ComboBox fx:id="cbPetType" prefWidth="140"/>
+                <Label text="Raza"/>
+                <ComboBox fx:id="cbBreed" prefWidth="140"/>
+                <Button text="Filtrar" onAction="#onFilter"
+                        style="-fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Tarjetas resumen -->
+            <HBox spacing="12">
+                <VBox alignment="CENTER_LEFT" prefWidth="220"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="Adopciones exitosas"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblSuccessTotal"
+                           style="-fx-font-size: 22px; -fx-text-fill: #1D9E75;"/>
+                    <Label fx:id="lblSuccessPct"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefWidth="220"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="En espera"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblWaitingTotal"
+                           style="-fx-font-size: 22px; -fx-text-fill: #BA7517;"/>
+                    <Label fx:id="lblWaitingPct"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefWidth="220"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="Total"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblGrandTotal"
+                           style="-fx-font-size: 22px; -fx-text-fill: #534AB7;"/>
+                </VBox>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="16" BorderPane.alignment="CENTER">
+            <HBox.margin><Insets top="16"/></HBox.margin>
+
+            <!-- Tabla -->
+            <VBox HBox.hgrow="ALWAYS">
+                <TableView fx:id="tblStats" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colStatus"  text="Estado"     prefWidth="150"/>
+                        <TableColumn fx:id="colTotal"   text="Cantidad"   prefWidth="100"/>
+                        <TableColumn fx:id="colPercent" text="Porcentaje" prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Gráfico de pastel -->
+            <PieChart fx:id="pieChart"
+                      HBox.hgrow="ALWAYS"
+                      prefWidth="380" prefHeight="300"
+                      animated="false"/>
+
+        </HBox>
+    </center>
+
+</BorderPane>

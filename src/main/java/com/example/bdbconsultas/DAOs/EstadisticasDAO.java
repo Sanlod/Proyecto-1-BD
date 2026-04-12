@@ -3,43 +3,39 @@ package com.example.bdbconsultas.DAOs;
 import com.example.bdbconsultas.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.*;
-import java.util.List;
+import java.time.LocalDate;
 
 public class EstadisticasDAO {
-    public static class ResultadoConsulta {
-        public final List<String> columnas;
-        public final ObservableList<ObservableList<String>> filas;
-        public final int total;
 
-        public ResultadoConsulta(List<String> columnas,
-                                 ObservableList<ObservableList<String>> filas,
-                                 int total) {
-            this.columnas = columnas;
-            this.filas = filas;
-            this.total = total;
-        }
-    }
-    public static ObservableList<ObservableList<String>> listadosCatalogo(String nomSP)
-            throws SQLException, ClassNotFoundException {
-        ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
+    public ObservableList<ObservableList<String>> getStatsByTypeAndState(
+            LocalDate startDate, LocalDate endDate) throws SQLException {
+
+        ObservableList<ObservableList<String>> results = FXCollections.observableArrayList();
+        String sql = "{ call SP_STATS_PETS_BY_TYPE_STATE(?, ?, ?) }";
+
         try (Connection conn = DBConnection.getConnection();
-             CallableStatement cs = conn.prepareCall("{ CALL " + nomSP + " (?) }")) {
-            cs.registerOutParameter(1, Types.REF_CURSOR);
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setDate(1, Date.valueOf(startDate));
+            cs.setDate(2, Date.valueOf(endDate));
+            cs.registerOutParameter(3, Types.REF_CURSOR);
             cs.execute();
-            try (ResultSet rs = (ResultSet) cs.getObject(1)) {
-                int numCols = rs.getMetaData().getColumnCount();
+
+            try (ResultSet rs = (ResultSet) cs.getObject(3)) {
                 while (rs.next()) {
-                    ObservableList<String> fila = FXCollections.observableArrayList();
-                    for (int i = 1; i <= numCols; i++) {
-                        Object val = rs.getObject(i);
-                        fila.add(val != null ? val.toString() : "");
-                    }
-                    filas.add(fila);
+                    ObservableList<String> row = FXCollections.observableArrayList();
+                    row.add(rs.getString("pet_type_name")); // [0]
+                    row.add(rs.getString("state_name"));    // [1]
+                    row.add(rs.getString("total"));         // [2]
+                    results.add(row);
                 }
             }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        return filas;
+        return results;
     }
+
+
 }

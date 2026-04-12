@@ -1,0 +1,67 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.bdbconsultas.EstadisticasMatchesController"
+            prefWidth="900" prefHeight="600">
+
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+    <top>
+        <VBox spacing="16">
+
+            <Label text="Estadísticas de matches"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <!-- Tarjetas resumen -->
+            <HBox spacing="12">
+                <VBox alignment="CENTER_LEFT" prefWidth="220"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="Total de matches"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblTotalRecords"
+                           style="-fx-font-size: 22px; -fx-text-fill: #534AB7;"/>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefWidth="220"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="Promedio de similitud"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblOverallAvg"
+                           style="-fx-font-size: 22px; -fx-text-fill: #1D9E75;"/>
+                </VBox>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="16" BorderPane.alignment="CENTER">
+            <HBox.margin><Insets top="16"/></HBox.margin>
+
+            <!-- Tabla -->
+            <VBox HBox.hgrow="ALWAYS">
+                <TableView fx:id="tblStats" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colStatus"        text="Estado"            prefWidth="120"/>
+                        <TableColumn fx:id="colTotal"         text="Cantidad"          prefWidth="90"/>
+                        <TableColumn fx:id="colAvgSimilarity" text="Similitud promedio" prefWidth="140"/>
+                        <TableColumn fx:id="colPercent"       text="Porcentaje"        prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Gráfico -->
+            <PieChart fx:id="pieChart"
+                      HBox.hgrow="ALWAYS"
+                      prefWidth="380" prefHeight="300"
+                      animated="false"/>
+
+        </HBox>
+    </center>
+
+</BorderPane>

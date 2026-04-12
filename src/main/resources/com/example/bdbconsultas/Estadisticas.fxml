@@ -1,34 +1,120 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
 
 
-<AnchorPane prefHeight="495.0" prefWidth="747.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CONTROLLER_NAME">
-   <children>
-      <BarChart layoutX="35.0" layoutY="46.0" prefHeight="302.0" prefWidth="283.0">
-         <xAxis>
-            <CategoryAxis side="BOTTOM" />
-         </xAxis>
-         <yAxis>
-            <NumberAxis side="LEFT" />
-         </yAxis>
-      </BarChart>
-      <Text layoutX="54.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mascotas por estado" />
-      <BarChart layoutX="446.0" layoutY="50.0" prefHeight="301.0" prefWidth="264.0">
-         <xAxis>
-            <CategoryAxis prefWidth="208.0" side="BOTTOM" />
-         </xAxis>
-         <yAxis>
-            <NumberAxis prefHeight="109.0" prefWidth="28.0" side="LEFT" />
-         </yAxis>
-      </BarChart>
-      <Text layoutX="454.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Donaciones por asociacion" />
-      <Text layoutX="56.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\%Adopciones exitosas:" />
-      <Button layoutX="684.0" layoutY="2.0" mnemonicParsing="false" text="Volver" />
-   </children>
-</AnchorPane>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.bdbconsultas.EstadisticasController"
+            prefWidth="900" prefHeight="650">
+
+   <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+   <top>
+      <VBox spacing="16" BorderPane.alignment="CENTER">
+
+         <!-- Título -->
+         <Label text="Estadísticas de mascotas"
+                style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+         <!-- Barra de filtros -->
+         <HBox spacing="12" alignment="CENTER_LEFT"
+               style="-fx-background-color: white; -fx-border-color: #e0e0e0;
+                         -fx-border-radius: 8; -fx-background-radius: 8;
+                         -fx-padding: 12 16 12 16;">
+            <Label text="Desde"/>
+            <DatePicker fx:id="dpStartDate" prefWidth="140"/>
+            <Label text="Hasta"/>
+            <DatePicker fx:id="dpEndDate" prefWidth="140"/>
+            <Button text="Filtrar" onAction="#onFilter"
+                    style="-fx-cursor: hand;"/>
+         </HBox>
+
+         <!-- Tarjetas de totales por estado -->
+         <HBox spacing="12">
+            <VBox fx:id="cardLost" alignment="CENTER_LEFT" prefWidth="200"
+                  style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+               <Label text="Perdidas"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+               <Label fx:id="lblLostTotal"
+                      style="-fx-font-size: 22px; -fx-text-fill: #E24B4A;"/>
+               <Label fx:id="lblLostPct"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+            </VBox>
+            <VBox fx:id="cardFound" alignment="CENTER_LEFT" prefWidth="200"
+                  style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+               <Label text="Encontradas"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+               <Label fx:id="lblFoundTotal"
+                      style="-fx-font-size: 22px; -fx-text-fill: #1D9E75;"/>
+               <Label fx:id="lblFoundPct"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+            </VBox>
+            <VBox fx:id="cardAdopted" alignment="CENTER_LEFT" prefWidth="200"
+                  style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+               <Label text="Adoptadas"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+               <Label fx:id="lblAdoptedTotal"
+                      style="-fx-font-size: 22px; -fx-text-fill: #378ADD;"/>
+               <Label fx:id="lblAdoptedPct"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+            </VBox>
+            <VBox fx:id="cardInAdoption" alignment="CENTER_LEFT" prefWidth="200"
+                  style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+               <Label text="En adopción"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+               <Label fx:id="lblInAdoptionTotal"
+                      style="-fx-font-size: 22px; -fx-text-fill: #BA7517;"/>
+               <Label fx:id="lblInAdoptionPct"
+                      style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+            </VBox>
+         </HBox>
+
+      </VBox>
+   </top>
+
+   <!-- Tabla + Gráfico -->
+   <center>
+      <HBox spacing="16" BorderPane.alignment="CENTER">
+         <HBox.margin><Insets top="16"/></HBox.margin>
+
+         <!-- Tabla detalle -->
+         <VBox spacing="8" HBox.hgrow="ALWAYS">
+            <TableView fx:id="tblStats" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colType"    text="Tipo"      prefWidth="120"/>
+                  <TableColumn fx:id="colState"   text="Estado"    prefWidth="120"/>
+                  <TableColumn fx:id="colTotal"   text="Cantidad"  prefWidth="90"/>
+                  <TableColumn fx:id="colPercent" text="Porcentaje"         prefWidth="80"/>
+               </columns>
+            </TableView>
+            <HBox alignment="CENTER_RIGHT">
+               <Label text="Total general: "
+                      style="-fx-font-size: 13px; -fx-text-fill: #777;"/>
+               <Label fx:id="lblGrandTotal"
+                      style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            </HBox>
+         </VBox>
+
+         <!-- Gráfico de barras -->
+         <BarChart fx:id="barChart" HBox.hgrow="ALWAYS"
+                   prefWidth="380" prefHeight="340"
+                   animated="false">
+            <xAxis>
+               <CategoryAxis fx:id="xAxis" label="Tipo de mascota"/>
+            </xAxis>
+            <yAxis>
+               <NumberAxis fx:id="yAxis" label="Cantidad"/>
+            </yAxis>
+         </BarChart>
+
+      </HBox>
+   </center>
+
+</BorderPane>

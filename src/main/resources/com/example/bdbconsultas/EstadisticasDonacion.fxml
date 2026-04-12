@@ -1,0 +1,97 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.bdbconsultas.EstadisticasDonacionController"
+            prefWidth="900" prefHeight="650">
+
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+    <top>
+        <VBox spacing="16">
+
+            <Label text="Estadísticas de donaciones y recompensas"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <!-- Filtro de fechas -->
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-border-color: #e0e0e0;
+                         -fx-border-radius: 8; -fx-background-radius: 8;
+                         -fx-padding: 12 16 12 16;">
+                <Label text="Desde"/>
+                <DatePicker fx:id="dpStartDate" prefWidth="140"/>
+                <Label text="Hasta"/>
+                <DatePicker fx:id="dpEndDate" prefWidth="140"/>
+                <Button text="Filtrar" onAction="#onFilter" style="-fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Tarjetas de resumen -->
+            <HBox spacing="12">
+                <VBox alignment="CENTER_LEFT" prefWidth="250"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="Total asociaciones"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblAssociationTotal"
+                           style="-fx-font-size: 22px; -fx-text-fill: #378ADD;"/>
+                    <Label fx:id="lblAssociationPct"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefWidth="250"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="Total rescatistas"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblRescuerTotal"
+                           style="-fx-font-size: 22px; -fx-text-fill: #1D9E75;"/>
+                    <Label fx:id="lblRescuerPct"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefWidth="250"
+                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
+                             -fx-padding: 14 16 14 16;">
+                    <Label text="Total general"
+                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                    <Label fx:id="lblGrandTotal"
+                           style="-fx-font-size: 22px; -fx-text-fill: #534AB7;"/>
+                </VBox>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="16" BorderPane.alignment="CENTER">
+            <HBox.margin><Insets top="16"/></HBox.margin>
+
+            <!-- Tabla -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <TableView fx:id="tblStats" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colName"    text="Nombre"     prefWidth="180"/>
+                        <TableColumn fx:id="colType"    text="Tipo"       prefWidth="110"/>
+                        <TableColumn fx:id="colTotal"   text="Total"      prefWidth="100"/>
+                        <TableColumn fx:id="colPercent" text="Porcentaje" prefWidth="90"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Gráfico -->
+            <BarChart fx:id="barChart" HBox.hgrow="ALWAYS"
+                      prefWidth="380" prefHeight="340"
+                      animated="false">
+                <xAxis>
+                    <CategoryAxis fx:id="xAxis" label="Entidad"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxis" label="Total"/>
+                </yAxis>
+            </BarChart>
+
+        </HBox>
+    </center>
+
+</BorderPane>
