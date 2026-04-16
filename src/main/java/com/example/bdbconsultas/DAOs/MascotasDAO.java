@@ -5,8 +5,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MascotasDAO {
 
@@ -46,10 +49,12 @@ public class MascotasDAO {
         return filas;
     }
 
+
     public static ObservableList<ObservableList<String>> getTiposMascotas()
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_TIPOS");
     }
+
     public static ObservableList<ObservableList<String>> getColores()
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_COLORES");
@@ -80,11 +85,6 @@ public class MascotasDAO {
         return listadosCatalogo("SP_LISTAR_RESCATISTAS");
     }
 
-    public static ObservableList<ObservableList<String>> getDistritos()
-            throws SQLException, ClassNotFoundException {
-        return listadosCatalogo("SP_LISTAR_DISTRITOS");
-    }
-
     public static ObservableList<ObservableList<String>> getVeterinarios()
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_VETERINARIOS");
@@ -94,37 +94,10 @@ public class MascotasDAO {
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_CASASCUNA");
     }
+
     public static ObservableList<ObservableList<String>> getAsociaciones()
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_ASOCIACIONES");
-    }
-
-    public static ObservableList<ObservableList<String>> getRazas()
-            throws SQLException, ClassNotFoundException {
-        return listadosCatalogo("SP_LISTAR_RAZAS");
-    }
-
-    public static ObservableList<ObservableList<String>> geRazasPorTipo(String idTipo)
-            throws SQLException, ClassNotFoundException {
-        ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
-        try (Connection conn = DBConnection.getConnection();
-             CallableStatement cs = conn.prepareCall("{ CALL SP_LISTAR_RAZAS(?,?) }")) {
-            cs.setString(1, idTipo);
-            cs.registerOutParameter(2, Types.REF_CURSOR);
-            cs.execute();
-            try (ResultSet rs = (ResultSet) cs.getObject(2)) {
-                int numCols = rs.getMetaData().getColumnCount();
-                while (rs.next()) {
-                    ObservableList<String> fila = FXCollections.observableArrayList();
-                    for (int i = 1; i <= numCols; i++) {
-                        Object val = rs.getObject(i);
-                        fila.add(val != null ? val.toString() : "");
-                    }
-                    filas.add(fila);
-                }
-            }
-        }
-        return filas;
     }
 
     public static ObservableList<ObservableList<String>> getMonedas()
@@ -132,10 +105,6 @@ public class MascotasDAO {
         return listadosCatalogo("SP_LISTAR_MONEDAS");
     }
 
-    public static ObservableList<ObservableList<String>> getProvincias()
-            throws SQLException, ClassNotFoundException {
-        return listadosCatalogo("SP_LISTAR_PROVINCIAS");
-    }
     public static ObservableList<ObservableList<String>> getEnfermedades()
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_ENFERMEDADES");
@@ -150,12 +119,46 @@ public class MascotasDAO {
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_MEDICAMENTOS");
     }
+
+    public static ObservableList<ObservableList<String>> getProvincias()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_PROVINCIAS");
+    }
+
+    public static ObservableList<ObservableList<String>> getRazas()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_RAZAS");
+    }
+
+    public static ObservableList<ObservableList<String>> getRazasPorTipo(String idTipo)
+            throws SQLException, ClassNotFoundException {
+        ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_LISTAR_RAZAS(?,?) }")) {
+            cs.setString(1, idTipo == null || idTipo.isEmpty() ? null : idTipo);
+            cs.registerOutParameter(2, Types.REF_CURSOR);
+            cs.execute();
+            try (ResultSet rs = (ResultSet) cs.getObject(2)) {
+                int numCols = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    ObservableList<String> fila = FXCollections.observableArrayList();
+                    for (int i = 1; i <= numCols; i++) {
+                        Object val = rs.getObject(i);
+                        fila.add(val != null ? val.toString() : "");
+                    }
+                    filas.add(fila);
+                }
+            }
+        }
+        return filas;
+    }
+
     public static ObservableList<ObservableList<String>> getCantonesPorProvincia(String idProvincia)
             throws SQLException, ClassNotFoundException {
         ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall("{ CALL SP_LISTAR_CANTONES(?,?) }")) {
-            cs.setString(1, idProvincia);
+            cs.setString(1, idProvincia == null || idProvincia.isEmpty() ? null : idProvincia);
             cs.registerOutParameter(2, Types.REF_CURSOR);
             cs.execute();
             try (ResultSet rs = (ResultSet) cs.getObject(2)) {
@@ -173,12 +176,12 @@ public class MascotasDAO {
         return filas;
     }
 
-    public static ObservableList<ObservableList<String>> getDistritosCanton(String idCanton)
+    public static ObservableList<ObservableList<String>> getDistritosPorCanton(String idCanton)
             throws SQLException, ClassNotFoundException {
         ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall("{ CALL SP_LISTAR_DISTRITOS(?,?) }")) {
-            cs.setString(1, idCanton);
+            cs.setString(1, idCanton == null || idCanton.isEmpty() ? null : idCanton);
             cs.registerOutParameter(2, Types.REF_CURSOR);
             cs.execute();
             try (ResultSet rs = (ResultSet) cs.getObject(2)) {
@@ -197,71 +200,82 @@ public class MascotasDAO {
     }
 
 
-    public MascotasDAO.ResultadoConsulta consultarMascotas(
-            String idTipoMascota,
+    public ResultadoConsulta consultarMascotas(
+            String idTipo,
             String idRaza,
             String nombre,
+            String chip,
             String idRescatista,
             String idEstado,
+            String idColor,
             String idProvincia,
             String idCanton,
             String idDistrito,
-            String idAsociacion) throws SQLException, ClassNotFoundException {
-
+            String idAsociacion,
+            LocalDate fechaDesde,
+            LocalDate fechaHasta) throws SQLException, ClassNotFoundException {
 
         List<String> columnas = new ArrayList<>();
         ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
         int total = 0;
 
-        try (Connection conn = DBConnection.getConnection()) {
-            try (CallableStatement cs = conn.prepareCall(
-                    "{ CALL SP_CONSULTAR_MASCOTAS(?,?,?,?,?,?,?,?,?,?,?) }")) {
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall(
+                     "{ CALL SP_CONSULTAR_MASCOTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }")) {
 
-                // Parámetros IN — si viene vacío manda NULL
+            cs.setString(1, idTipo == null || idTipo.isEmpty() ? null : idTipo);
+            cs.setString(2, idRaza == null || idRaza.isEmpty() ? null : idRaza);
+            cs.setString(3, nombre == null || nombre.isEmpty() ? null : nombre);
+            cs.setString(4, chip == null || chip.isEmpty() ? null : chip);
+            cs.setString(5, idRescatista == null || idRescatista.isEmpty() ? null : idRescatista);
+            cs.setString(6, idEstado == null || idEstado.isEmpty() ? null : idEstado);
+            cs.setString(7, idColor == null || idColor.isEmpty() ? null : idColor);
+            cs.setString(8, idProvincia == null || idProvincia.isEmpty() ? null : idProvincia);
+            cs.setString(9, idCanton == null || idCanton.isEmpty() ? null : idCanton);
+            cs.setString(10, idDistrito == null || idDistrito.isEmpty() ? null : idDistrito);
+            cs.setString(11, idAsociacion == null || idAsociacion.isEmpty() ? null : idAsociacion);
 
-                cs.setString(1, idTipoMascota.isEmpty()  ? null : idTipoMascota);
-                cs.setString(2, idRaza.isEmpty()  ? null : idRaza);
-                cs.setString(3, nombre.isEmpty()  ? null : nombre);
-                cs.setString(4, idRescatista.isEmpty()  ? null : idRescatista);
-                cs.setString(5, idEstado.isEmpty()  ? null : idEstado);
-                cs.setString(6, idProvincia.isEmpty()  ? null : idProvincia);
-                cs.setString(7, idCanton.isEmpty()  ? null : idCanton);
-                cs.setString(8, idDistrito.isEmpty()  ? null : idDistrito);
-                cs.setString(9, idAsociacion.isEmpty() ? null : idAsociacion);
+            if (fechaDesde == null) {
+                cs.setNull(12, Types.DATE);
+            } else {
+                cs.setDate(12, Date.valueOf(fechaDesde));
+            }
 
-                // Parámetros OUT
-                cs.registerOutParameter(10, Types.REF_CURSOR);
-                cs.registerOutParameter(11, Types.NUMERIC);
+            if (fechaHasta == null) {
+                cs.setNull(13, Types.DATE);
+            } else {
+                cs.setDate(13, Date.valueOf(fechaHasta));
+            }
 
-                cs.execute();
+            cs.registerOutParameter(14, Types.REF_CURSOR);
+            cs.registerOutParameter(15, Types.NUMERIC);
 
-                total = cs.getInt(11);
+            cs.execute();
 
-                try (ResultSet rs = (ResultSet) cs.getObject(10)) {
-                    ResultSetMetaData meta = rs.getMetaData();
-                    int numCols = meta.getColumnCount();
+            total = cs.getInt(15);
 
-                    // Nombres de columnas
+            try (ResultSet rs = (ResultSet) cs.getObject(14)) {
+                ResultSetMetaData meta = rs.getMetaData();
+                int numCols = meta.getColumnCount();
+
+                for (int i = 1; i <= numCols; i++) {
+                    columnas.add(meta.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    ObservableList<String> fila = FXCollections.observableArrayList();
                     for (int i = 1; i <= numCols; i++) {
-                        columnas.add(meta.getColumnLabel(i));
+                        Object val = rs.getObject(i);
+                        fila.add(val != null ? val.toString() : "");
                     }
-
-                    // Filas como strings
-                    while (rs.next()) {
-                        ObservableList<String> fila = FXCollections.observableArrayList();
-                        for (int i = 1; i <= numCols; i++) {
-                            Object val = rs.getObject(i);
-                            fila.add(val != null ? val.toString() : "");
-                        }
-                        filas.add(fila);
-                    }
+                    filas.add(fila);
                 }
             }
         }
-        return new MascotasDAO.ResultadoConsulta(columnas, filas, total);
+        return new ResultadoConsulta(columnas, filas, total);
     }
 
-    public static void registrarMascota(
+    public int registrarMascota(
             String nombre,
             String idBreed,
             String idColor,
@@ -275,59 +289,80 @@ public class MascotasDAO {
             String telefono,
             String email,
             String abandonSituationDescription,
-            String descripcion,
-            String trainingDifficulty,
-            java.time.LocalDate lossDate,
-            java.time.LocalDate foundDate,
-            String idVeterinario,
-            String idCasaCuna,
-            String idRescatista,
-            String idAsociacion,
-            byte[] imagenAntes,
-            byte[] imagenDespues,
+            String descriptionNotes,
+            String idTrainingDifficulty,
+            LocalDate lossDate,
+            LocalDate foundDate,
+            String idVeterinarian,
+            String idCribHouse,
+            String idRescuer,
+            String idAssociation,
+            byte[] beforePicture,
+            byte[] afterPicture,
             String createdBy) throws SQLException, ClassNotFoundException {
 
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall(
-                     "{ CALL SP_REGISTRAR_MASCOTA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }")) {
+                     "{ CALL SP_REGISTRAR_MASCOTA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }")) {
 
             cs.setString(1, nombre);
-            cs.setString(2, idBreed.isEmpty()                      ? null : idBreed);
-            cs.setString(3, idColor.isEmpty()                      ? null : idColor);
-            cs.setString(4, chip.isEmpty()                         ? null : chip);
-            cs.setString(5, idEstado.isEmpty()                     ? null : idEstado);
-            cs.setString(6, idSeveridad.isEmpty()                  ? null : idSeveridad);
-            cs.setString(7, idNivelEnergia.isEmpty()               ? null : idNivelEnergia);
-            cs.setString(8, idDistrito.isEmpty()                   ? null : idDistrito);
-            cs.setString(9, petSize.isEmpty()                      ? null : petSize);
+            cs.setString(2, idBreed == null || idBreed.isEmpty() ? null : idBreed);
+            cs.setString(3, idColor == null || idColor.isEmpty() ? null : idColor);
+            cs.setString(4, chip == null || chip.isEmpty() ? null : chip);
+            cs.setString(5, idEstado == null || idEstado.isEmpty() ? null : idEstado);
+            cs.setString(6, idSeveridad == null || idSeveridad.isEmpty() ? null : idSeveridad);
+            cs.setString(7, idNivelEnergia == null || idNivelEnergia.isEmpty() ? null : idNivelEnergia);
+            cs.setString(8, idDistrito == null || idDistrito.isEmpty() ? null : idDistrito);
+            cs.setString(9, petSize == null || petSize.isEmpty() ? null : petSize);
             cs.setInt(10, requiresMuchSpace);
-            cs.setString(11, telefono.isEmpty()                    ? null : telefono);
-            cs.setString(12, email.isEmpty()                       ? null : email);
-            cs.setString(13, abandonSituationDescription.isEmpty() ? null : abandonSituationDescription);
-            cs.setString(14, descripcion.isEmpty()                 ? null : descripcion);
-            cs.setString(15, trainingDifficulty.isEmpty()          ? null : trainingDifficulty);
-            cs.setDate(16, lossDate  != null ? java.sql.Date.valueOf(lossDate)  : null);
-            cs.setDate(17, foundDate != null ? java.sql.Date.valueOf(foundDate) : null);
-            cs.setString(18, idVeterinario.isEmpty()               ? null : idVeterinario);
-            cs.setString(19, idCasaCuna.isEmpty()                  ? null : idCasaCuna);
-            cs.setString(20, idRescatista.isEmpty()                ? null : idRescatista);
-            cs.setString(21, idAsociacion.isEmpty()                ? null : idAsociacion);
+            cs.setString(11, telefono == null || telefono.isEmpty() ? null : telefono);
+            cs.setString(12, email == null || email.isEmpty() ? null : email);
+            cs.setString(13, abandonSituationDescription == null || abandonSituationDescription.isEmpty() ? null : abandonSituationDescription);
+            cs.setString(14, descriptionNotes == null || descriptionNotes.isEmpty() ? null : descriptionNotes);
+            cs.setString(15, idTrainingDifficulty == null || idTrainingDifficulty.isEmpty() ? null : idTrainingDifficulty);
 
-            if (imagenAntes != null) cs.setBytes(22, imagenAntes);
-            else cs.setNull(22, Types.BLOB);
+            if (lossDate == null) {
+                cs.setNull(16, Types.DATE);
+            } else {
+                cs.setDate(16, Date.valueOf(lossDate));
+            }
 
-            if (imagenDespues != null) cs.setBytes(23, imagenDespues);
-            else cs.setNull(23, Types.BLOB);
+            if (foundDate == null) {
+                cs.setNull(17, Types.DATE);
+            } else {
+                cs.setDate(17, Date.valueOf(foundDate));
+            }
+
+            cs.setString(18, idVeterinarian == null || idVeterinarian.isEmpty() ? null : idVeterinarian);
+            cs.setString(19, idCribHouse == null || idCribHouse.isEmpty() ? null : idCribHouse);
+            cs.setString(20, idRescuer == null || idRescuer.isEmpty() ? null : idRescuer);
+            cs.setString(21, idAssociation == null || idAssociation.isEmpty() ? null : idAssociation);
+
+            if (beforePicture != null) {
+                cs.setBytes(22, beforePicture);
+            } else {
+                cs.setNull(22, Types.BLOB);
+            }
+
+            if (afterPicture != null) {
+                cs.setBytes(23, afterPicture);
+            } else {
+                cs.setNull(23, Types.BLOB);
+            }
 
             cs.setString(24, createdBy);
+            cs.registerOutParameter(25, Types.NUMERIC);
 
             cs.execute();
+
+            return cs.getInt(25);
+
         }
     }
     public static void registrarEnfermedadMascota(
             String idPet,
             String idDisease,
-            java.time.LocalDate startDate,
+            LocalDate startDate,
             String createdBy) throws SQLException, ClassNotFoundException {
 
         try (Connection conn = DBConnection.getConnection();
@@ -336,7 +371,7 @@ public class MascotasDAO {
 
             cs.setString(1, idPet);
             cs.setString(2, idDisease);
-            cs.setDate(3, startDate != null ? java.sql.Date.valueOf(startDate) : null);
+            cs.setDate(3, startDate != null ? Date.valueOf(startDate) : null);
             cs.setString(4, createdBy);
 
             cs.execute();
@@ -346,7 +381,7 @@ public class MascotasDAO {
     public static void registrarTratamientoMascota(
             String idPet,
             String idTreatment,
-            java.time.LocalDate startDate,
+            LocalDate startDate,
             String createdBy) throws SQLException, ClassNotFoundException {
 
         try (Connection conn = DBConnection.getConnection();
@@ -355,7 +390,7 @@ public class MascotasDAO {
 
             cs.setString(1, idPet);
             cs.setString(2, idTreatment);
-            cs.setDate(3, startDate != null ? java.sql.Date.valueOf(startDate) : null);
+            cs.setDate(3, startDate != null ? Date.valueOf(startDate) : null);
             cs.setString(4, createdBy);
 
             cs.execute();
@@ -366,7 +401,7 @@ public class MascotasDAO {
             String idPet,
             String idMedication,
             String dose,
-            java.time.LocalDate startDate,
+            LocalDate startDate,
             String createdBy) throws SQLException, ClassNotFoundException {
 
         try (Connection conn = DBConnection.getConnection();
@@ -375,11 +410,119 @@ public class MascotasDAO {
 
             cs.setString(1, idPet);
             cs.setString(2, idMedication);
-            cs.setString(3, dose.isEmpty() ? null : dose);
-            cs.setDate(4, startDate != null ? java.sql.Date.valueOf(startDate) : null);
+            cs.setString(3, dose == null || dose.isEmpty() ? null : dose);
+            cs.setDate(4, startDate != null ? Date.valueOf(startDate) : null);
             cs.setString(5, createdBy);
 
             cs.execute();
         }
+    }
+
+    public byte[] obtenerImagenMascota(String idMascota) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT beforePicture FROM Pet WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, Integer.parseInt(idMascota));
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Blob blob = rs.getBlob("beforePicture");
+                if (blob != null) {
+                    return blob.getBytes(1, (int) blob.length());
+                }
+            }
+        }
+        return null;
+    }
+    public Map<String, Object> obtenerMascotaPorId(String idMascota)
+            throws SQLException, ClassNotFoundException {
+
+        String sql = "SELECT p.id, p.name, pt.name AS tipo, b.name AS raza, c.name AS color, " +
+                "p.chip, st.name AS estado, sev.name AS severidad, en.name AS nivel_energia, " +
+                "p.pet_size AS tamanio, p.requiresMuchSpace AS requiere_espacio, " +
+                "p.telephone, p.email, " +
+                "pr.name || ', ' || can.name || ', ' || d.name AS ubicacion, " +
+                "per.firstName || ' ' || per.firstSurname AS rescatista, " +
+                "a.name AS asociacion, " +
+                "pv.firstName || ' ' || pv.firstSurname AS veterinario, " +
+                "pc.firstName || ' ' || pc.firstSurname AS casa_cuna, " +
+                "td.name AS dificultad, " +
+                "TO_CHAR(p.loss_date, 'DD/MM/YYYY') AS fecha_perdida, " +
+                "TO_CHAR(p.foundDate, 'DD/MM/YYYY') AS fecha_hallazgo, " +
+                "p.abandonSituationDescription, p.descriptionNotes, " +
+                "p.beforePicture, p.afterPicture " +
+                "FROM Pet p " +
+                "JOIN Breed b ON b.id = p.idBreed " +
+                "JOIN PetType pt ON pt.id = b.idPetType " +
+                "LEFT JOIN Colour c ON c.id = p.idColour " +
+                "LEFT JOIN State st ON st.id = p.idState " +
+                "LEFT JOIN Severity sev ON sev.id = p.idSeverity " +
+                "LEFT JOIN EnergyLevel en ON en.id = p.idEnergyLevel " +
+                "LEFT JOIN District d ON d.id = p.idDistrict " +
+                "LEFT JOIN Canton can ON can.id = d.idCanton " +
+                "LEFT JOIN Province pr ON pr.id = can.idProvince " +
+                "LEFT JOIN Rescuer r ON r.id = p.idRescuer " +
+                "LEFT JOIN Person per ON per.id = r.id " +
+                "LEFT JOIN Association a ON a.id = p.idAssociation " +
+                "LEFT JOIN Veterinarian v ON v.id = p.idVeterinarian " +
+                "LEFT JOIN Person pv ON pv.id = v.id " +
+                "LEFT JOIN CribHouse ch ON ch.id = p.idCribHouse " +
+                "LEFT JOIN Person pc ON pc.id = ch.id " +
+                "LEFT JOIN TrainingDifficulty td ON td.id = p.idTrainingDifficulty " +
+                "WHERE p.id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, Integer.parseInt(idMascota));
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Map<String, Object> datos = new HashMap<>();
+
+                datos.put("id", rs.getString("id"));
+                datos.put("nombre", rs.getString("name"));
+                datos.put("tipo", rs.getString("tipo"));
+                datos.put("raza", rs.getString("raza"));
+                datos.put("color", rs.getString("color"));
+                datos.put("chip", rs.getString("chip"));
+                datos.put("estado", rs.getString("estado"));
+                datos.put("severidad", rs.getString("severidad"));
+                datos.put("nivelEnergia", rs.getString("nivel_energia"));
+                datos.put("tamanio", rs.getString("tamanio"));
+                datos.put("requiereEspacio", rs.getInt("requiere_espacio"));
+                datos.put("telefono", rs.getString("telephone"));
+                datos.put("email", rs.getString("email"));
+                datos.put("ubicacion", rs.getString("ubicacion"));
+                datos.put("rescatista", rs.getString("rescatista"));
+                datos.put("asociacion", rs.getString("asociacion"));
+                datos.put("veterinario", rs.getString("veterinario"));
+                datos.put("casaCuna", rs.getString("casa_cuna"));
+                datos.put("dificultad", rs.getString("dificultad"));
+                datos.put("fechaPerdida", rs.getString("fecha_perdida"));
+                datos.put("fechaHallazgo", rs.getString("fecha_hallazgo"));
+                datos.put("descripcionAbandono", rs.getString("abandonSituationDescription"));
+                datos.put("notas", rs.getString("descriptionNotes"));
+
+                Blob blobAntes = rs.getBlob("beforePicture");
+                if (blobAntes != null) {
+                    datos.put("imagenAntes", blobAntes.getBytes(1, (int) blobAntes.length()));
+                } else {
+                    datos.put("imagenAntes", null);
+                }
+
+                Blob blobDespues = rs.getBlob("afterPicture");
+                if (blobDespues != null) {
+                    datos.put("imagenDespues", blobDespues.getBytes(1, (int) blobDespues.length()));
+                } else {
+                    datos.put("imagenDespues", null);
+                }
+
+                return datos;
+            }
+        }
+        return null;
     }
 }

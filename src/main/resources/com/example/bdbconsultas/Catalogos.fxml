@@ -9,25 +9,24 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="563.0" prefWidth="888.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CONTROLLER_NAME">
+<AnchorPane prefHeight="563.0" prefWidth="888.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.CatalogosController">
    <children>
       <Text layoutX="24.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entidad" />
-      <ComboBox layoutX="24.0" layoutY="56.0" prefWidth="150.0" />
-      <TableView layoutX="24.0" layoutY="103.0" prefHeight="242.0" prefWidth="854.0">
+      <ComboBox fx:id="cmbEntidad" layoutX="24.0" layoutY="56.0" onAction="#onEntidadSeleccionada" prefWidth="150.0" />
+      <TableView fx:id="tblDatos" layoutX="24.0" layoutY="103.0" prefHeight="242.0" prefWidth="854.0">
          <columns>
-            <TableColumn prefWidth="75.0" text="C1" />
-            <TableColumn prefWidth="75.0" text="C2" />
+            <TableColumn fx:id="colC1" prefWidth="75.0" text="C1" />
+            <TableColumn fx:id="colC2" prefWidth="75.0" text="C2" />
          </columns>
       </TableView>
-      <Spinner layoutX="37.0" layoutY="432.0" />
+      <Spinner fx:id="spnIdEditar" layoutX="37.0" layoutY="432.0" />
       <Text layoutX="37.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID a editar" />
-      <Button layoutX="41.0" layoutY="520.0" mnemonicParsing="false" text="Editar" />
+      <Button fx:id="btnEditar" layoutX="41.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditar" text="Editar" />
       <Text layoutX="649.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Valor a agregar" />
       <Text layoutX="41.0" layoutY="478.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nuevo valor" />
-      <TextField layoutX="38.0" layoutY="482.0" />
-      <TextField layoutX="640.0" layoutY="432.0" />
-      <Button layoutX="649.0" layoutY="469.0" mnemonicParsing="false" text="Agregar" />
-      <Button layoutX="831.0" layoutY="1.0" mnemonicParsing="false" text="Volver" />
+      <TextField fx:id="txtNuevoValor" layoutX="38.0" layoutY="482.0" />
+      <TextField fx:id="txtValorAgregar" layoutX="640.0" layoutY="432.0" />
+      <Button fx:id="btnAgregar" layoutX="649.0" layoutY="469.0" mnemonicParsing="false" onAction="#onAgregar" text="Agregar" />
+      <Button fx:id="btnVolver" layoutX="828.0" layoutY="14.0" mnemonicParsing="false" onAction="#onVolver" text="Volver" />
    </children>
 </AnchorPane>
