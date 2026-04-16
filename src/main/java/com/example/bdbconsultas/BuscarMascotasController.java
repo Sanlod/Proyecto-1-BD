@@ -21,15 +21,11 @@ import java.util.stream.Collectors;
 
 public class BuscarMascotasController implements Initializable {
 
-    // =====================================================
-    // PÁGINAS (StackPane)
-    // =====================================================
+
     @FXML private AnchorPane paginaBusqueda;
     @FXML private AnchorPane paginaDetalle;
 
-    // =====================================================
-    // FILTROS DE BÚSQUEDA
-    // =====================================================
+
     @FXML private TextField txtNombre;
     @FXML private TextField txtNumChip;
     @FXML private ComboBox<String> cmbEstado;
@@ -44,9 +40,6 @@ public class BuscarMascotasController implements Initializable {
     @FXML private DatePicker dtDesde;
     @FXML private DatePicker dtHasta;
 
-    // =====================================================
-    // TABLA DE RESULTADOS
-    // =====================================================
     @FXML private TableView<ObservableList<String>> tblDatos;
     @FXML private TableColumn<ObservableList<String>, String> colNombre;
     @FXML private TableColumn<ObservableList<String>, String> colTipo;
@@ -56,24 +49,18 @@ public class BuscarMascotasController implements Initializable {
     @FXML private TableColumn<ObservableList<String>, String> colUbicacion;
     @FXML private TableColumn<ObservableList<String>, String> colFecha;
 
-    // =====================================================
-    // IMAGEN Y TOTAL
-    // =====================================================
+
     @FXML private ImageView imvMascota;
     @FXML private Label lblTotal;
 
-    // =====================================================
-    // BOTONES
-    // =====================================================
+
     @FXML private Button btnBuscar;
     @FXML private Button btnLimpiar;
     @FXML private Button btnVerDetalle;
     @FXML private Button btnVolver;
     @FXML private Button btnVolverBusqueda;
 
-    // =====================================================
-    // LABELS DE DETALLE
-    // =====================================================
+
     @FXML private Label lblDetalleNombre;
     @FXML private Label lblDetalleTipo;
     @FXML private Label lblDetalleRaza;
@@ -97,15 +84,10 @@ public class BuscarMascotasController implements Initializable {
     @FXML private Label lblDetalleDescAbandono;
     @FXML private Label lblDetalleNotas;
 
-    // =====================================================
-    // IMAGEVIEWS DE DETALLE
-    // =====================================================
     @FXML private ImageView imvDetalleAntes;
     @FXML private ImageView imvDetalleDespues;
 
-    // =====================================================
-    // DATOS PARA COMBOS EN CASCADA
-    // =====================================================
+
     private ObservableList<ObservableList<String>> datosProvinciasActuales;
     private ObservableList<ObservableList<String>> datosCantonesActuales;
     private ObservableList<ObservableList<String>> datosDistritosActuales;
@@ -118,9 +100,7 @@ public class BuscarMascotasController implements Initializable {
 
     private final MascotasDAO mascotasDAO = new MascotasDAO();
 
-    // =====================================================
-    // INICIALIZACIÓN
-    // =====================================================
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarCombos();

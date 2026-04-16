@@ -26,7 +26,7 @@ public class RegistrarMascotasController implements Initializable {
     @FXML private AnchorPane pagina1;
     @FXML private AnchorPane pagina2;
 
-    // Página 1
+    // pg1
     @FXML private TextField txtIdNombre1;
     @FXML private ComboBox<String> cmbIdTipo1;
     @FXML private ComboBox<String> cmbIdColor1;
@@ -47,7 +47,7 @@ public class RegistrarMascotasController implements Initializable {
     @FXML private ImageView imvFotoAntes;
     @FXML private ImageView imvFotoDespues;
 
-    // Página 2
+    //pg2
     @FXML private ComboBox<String> cmbTamanio;
     @FXML private CheckBox chkRequiereEspacio;
     @FXML private TextField txtTelefono;
@@ -118,7 +118,7 @@ public class RegistrarMascotasController implements Initializable {
                     .map(row -> row.get(1))
                     .collect(Collectors.toCollection(FXCollections::observableArrayList)));
 
-            // Niveles Energía
+            // Niveles Energia
             datosNivelesEnergiaActuales = MascotasDAO.getNivEnergia();
             cmbIdNivEnergia1.setItems(datosNivelesEnergiaActuales.stream()
                     .map(row -> row.get(1))
