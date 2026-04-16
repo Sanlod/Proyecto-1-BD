@@ -3,44 +3,186 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="532.0" prefWidth="869.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CONTROLLER_NAME">
+<AnchorPane prefHeight="600.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.BuscarMascotasController">
    <children>
-      <ComboBox layoutX="24.0" layoutY="82.0" prefWidth="150.0" />
-      <Text layoutX="24.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Estado" />
-      <ComboBox layoutX="187.0" layoutY="82.0" prefWidth="150.0" />
-      <Text layoutX="187.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Raza" />
-      <Text layoutX="28.0" layoutY="261.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lugar" />
-      <ComboBox layoutX="25.0" layoutY="282.0" prefWidth="150.0" />
-      <Text layoutX="31.0" layoutY="278.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Provincia" />
-      <ComboBox layoutX="200.0" layoutY="282.0" prefWidth="150.0" />
-      <Text layoutX="200.0" layoutY="279.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Distrito" />
-      <ComboBox layoutX="25.0" layoutY="336.0" prefWidth="150.0" />
-      <Text layoutX="25.0" layoutY="332.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cantón" />
-      <Button layoutX="214.0" layoutY="476.0" mnemonicParsing="false" text="Buscar" />
-      <TableView layoutX="382.0" layoutY="77.0" prefHeight="413.0" prefWidth="458.0">
-         <columns>
-            <TableColumn prefWidth="75.0" text="C1" />
-            <TableColumn prefWidth="75.0" text="C2" />
-         </columns>
-      </TableView>
-      <Button layoutX="790.0" layoutY="14.0" mnemonicParsing="false" text="Go back" />
-      <ComboBox layoutX="25.0" layoutY="143.0" prefWidth="150.0" />
-      <Text layoutX="25.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Número chip" />
-      <Text layoutX="187.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rescatista" />
-      <ComboBox layoutX="187.0" layoutY="143.0" prefWidth="150.0" />
-      <Text layoutX="200.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rescatista" />
-      <ComboBox layoutX="200.0" layoutY="336.0" prefWidth="150.0" />
-      <Text layoutX="25.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asociación" />
-      <ComboBox layoutX="25.0" layoutY="211.0" prefWidth="150.0" />
-      <DatePicker fx:id="dpDesde" layoutX="24.0" layoutY="420.0" />
-      <Text layoutX="31.0" layoutY="416.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Desde" />
-      <DatePicker fx:id="dpHasta" layoutX="24.0" layoutY="476.0" />
-      <Text layoutX="31.0" layoutY="472.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hasta" />
-      <Text layoutX="27.0" layoutY="399.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resultados:" />
+      <StackPane prefHeight="600.0" prefWidth="933.0">
+         <children>
+
+            <!-- ============================================== -->
+            <!-- PÁGINA 2: DETALLE -->
+            <!-- ============================================== -->
+            <AnchorPane fx:id="paginaDetalle" prefHeight="601.0" prefWidth="933.0" visible="false">
+               <children>
+                  <Button fx:id="btnVolverBusqueda" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onVolverBusqueda" text="← Volver a resultados" />
+
+                  <Text layoutX="50.0" layoutY="80.0" text="Detalle de Mascota">
+                     <font><Font name="System Bold" size="18.0" /></font>
+                  </Text>
+
+                  <!-- Columna izquierda - Datos básicos -->
+                  <Text layoutX="50.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre:" />
+                  <Label fx:id="lblDetalleNombre" layoutX="150.0" layoutY="120.0" />
+
+                  <Text layoutX="50.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo:" />
+                  <Label fx:id="lblDetalleTipo" layoutX="150.0" layoutY="150.0" />
+
+                  <Text layoutX="50.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Raza:" />
+                  <Label fx:id="lblDetalleRaza" layoutX="150.0" layoutY="180.0" />
+
+                  <Text layoutX="50.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Color:" />
+                  <Label fx:id="lblDetalleColor" layoutX="150.0" layoutY="210.0" />
+
+                  <Text layoutX="50.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chip:" />
+                  <Label fx:id="lblDetalleChip" layoutX="150.0" layoutY="240.0" />
+
+                  <Text layoutX="50.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Estado:" />
+                  <Label fx:id="lblDetalleEstado" layoutX="150.0" layoutY="270.0" />
+
+                  <Text layoutX="50.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Severidad:" />
+                  <Label fx:id="lblDetalleSeveridad" layoutX="150.0" layoutY="300.0" />
+
+                  <Text layoutX="50.0" layoutY="330.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nivel energía:" />
+                  <Label fx:id="lblDetalleEnergia" layoutX="150.0" layoutY="330.0" />
+
+                  <Text layoutX="50.0" layoutY="360.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tamaño:" />
+                  <Label fx:id="lblDetalleTamanio" layoutX="150.0" layoutY="360.0" />
+
+                  <Text layoutX="50.0" layoutY="390.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Requiere espacio:" />
+                  <Label fx:id="lblDetalleEspacio" layoutX="180.0" layoutY="390.0" />
+
+                  <!-- Columna derecha - Contacto y ubicación -->
+                  <Text layoutX="350.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Teléfono:" />
+                  <Label fx:id="lblDetalleTelefono" layoutX="450.0" layoutY="120.0" />
+
+                  <Text layoutX="350.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
+                  <Label fx:id="lblDetalleEmail" layoutX="450.0" layoutY="150.0" />
+
+                  <Text layoutX="350.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ubicación:" />
+                  <Label fx:id="lblDetalleUbicacion" layoutX="450.0" layoutY="180.0" />
+
+                  <Text layoutX="350.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rescatista:" />
+                  <Label fx:id="lblDetalleRescatista" layoutX="450.0" layoutY="210.0" />
+
+                  <Text layoutX="350.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asociación:" />
+                  <Label fx:id="lblDetalleAsociacion" layoutX="450.0" layoutY="240.0" />
+
+                  <Text layoutX="350.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Veterinario:" />
+                  <Label fx:id="lblDetalleVeterinario" layoutX="450.0" layoutY="270.0" />
+
+                  <Text layoutX="350.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Casa Cuna:" />
+                  <Label fx:id="lblDetalleCasaCuna" layoutX="450.0" layoutY="300.0" />
+
+                  <Text layoutX="350.0" layoutY="330.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dificultad entrenamiento:" />
+                  <Label fx:id="lblDetalleDificultad" layoutX="520.0" layoutY="330.0" />
+
+                  <Text layoutX="350.0" layoutY="360.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Fecha pérdida:" />
+                  <Label fx:id="lblDetalleFechaPerdida" layoutX="450.0" layoutY="360.0" />
+
+                  <Text layoutX="350.0" layoutY="390.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Fecha hallazgo:" />
+                  <Label fx:id="lblDetalleFechaHallazgo" layoutX="450.0" layoutY="390.0" />
+
+                  <!-- Descripciones -->
+                  <Text layoutX="50.0" layoutY="440.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Descripción abandono:" />
+                  <Label fx:id="lblDetalleDescAbandono" layoutX="200.0" layoutY="440.0" maxWidth="250.0" wrapText="true" />
+
+                  <Text layoutX="50.0" layoutY="480.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notas:" />
+                  <Label fx:id="lblDetalleNotas" layoutX="200.0" layoutY="480.0" maxWidth="250.0" wrapText="true" />
+
+                  <!-- Imágenes -->
+                  <Text layoutX="600.0" layoutY="120.0" text="Foto ANTES:" />
+                  <ImageView fx:id="imvDetalleAntes" fitHeight="150.0" fitWidth="200.0" layoutX="600.0" layoutY="130.0" preserveRatio="true" />
+
+                  <Text layoutX="600.0" layoutY="300.0" text="Foto DESPUÉS:" />
+                  <ImageView fx:id="imvDetalleDespues" fitHeight="150.0" fitWidth="200.0" layoutX="600.0" layoutY="310.0" preserveRatio="true" />
+               </children>
+            </AnchorPane>
+
+            <!-- ============================================== -->
+            <!-- PÁGINA 1: BÚSQUEDA -->
+            <!-- ============================================== -->
+            <AnchorPane fx:id="paginaBusqueda" prefHeight="599.0" prefWidth="932.0">
+               <children>
+                  <Text layoutX="14.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Estado" />
+                  <ComboBox fx:id="cmbEstado" layoutX="14.0" layoutY="83.0" prefWidth="150.0" />
+
+                  <Text layoutX="177.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Raza" />
+                  <ComboBox fx:id="cmbRaza" layoutX="177.0" layoutY="83.0" prefWidth="150.0" />
+
+                  <Text layoutX="14.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Color" />
+                  <ComboBox fx:id="cmbColor" layoutX="14.0" layoutY="144.0" prefWidth="150.0" />
+
+                  <Text layoutX="177.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rescatista" />
+                  <ComboBox fx:id="cmbRescatista" layoutX="177.0" layoutY="144.0" prefWidth="150.0" />
+
+                  <Text layoutX="14.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asociación" />
+                  <ComboBox fx:id="cmbAsociacion" layoutX="14.0" layoutY="204.0" prefWidth="150.0" />
+
+                  <Text layoutX="177.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo" />
+                  <ComboBox fx:id="cmbTipo" layoutX="177.0" layoutY="204.0" prefWidth="150.0" />
+
+                  <Text layoutX="14.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lugar">
+                     <font><Font size="14.0" /></font>
+                  </Text>
+
+                  <Text layoutX="14.0" layoutY="295.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Provincia" />
+                  <ComboBox fx:id="cmbProvincia" layoutX="14.0" layoutY="299.0" prefWidth="150.0" />
+
+                  <Text layoutX="177.0" layoutY="295.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cantón" />
+                  <ComboBox fx:id="cmbCanton" layoutX="177.0" layoutY="299.0" prefWidth="150.0" />
+
+                  <Text layoutX="14.0" layoutY="355.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Distrito" />
+                  <ComboBox fx:id="cmbDistrito" layoutX="14.0" layoutY="359.0" prefWidth="150.0" />
+
+                  <Text layoutX="177.0" layoutY="355.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre" />
+                  <TextField fx:id="txtNombre" layoutX="177.0" layoutY="359.0" prefWidth="150.0" />
+
+                  <Text layoutX="14.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Número chip" />
+                  <TextField fx:id="txtNumChip" layoutX="14.0" layoutY="419.0" prefWidth="150.0" />
+
+                  <Text layoutX="14.0" layoutY="470.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resultados:" />
+
+                  <Text layoutX="14.0" layoutY="500.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Desde" />
+                  <DatePicker fx:id="dtDesde" layoutX="14.0" layoutY="505.0" prefWidth="150.0" />
+
+                  <Text layoutX="177.0" layoutY="500.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hasta" />
+                  <DatePicker fx:id="dtHasta" layoutX="177.0" layoutY="505.0" prefWidth="150.0" />
+
+                  <Button fx:id="btnBuscar" layoutX="14.0" layoutY="555.0" mnemonicParsing="false" onAction="#onBuscar" prefWidth="100.0" text="Buscar" />
+                  <Button fx:id="btnLimpiar" layoutX="130.0" layoutY="555.0" mnemonicParsing="false" onAction="#onLimpiar" prefWidth="100.0" text="Limpiar" />
+
+                  <TableView fx:id="tblDatos" layoutX="332.0" layoutY="80.0" prefHeight="350.0" prefWidth="594.0">
+                     <columns>
+                        <TableColumn fx:id="colNombre" prefWidth="90.0" text="Nombre" />
+                        <TableColumn fx:id="colTipo" prefWidth="70.0" text="Tipo" />
+                        <TableColumn fx:id="colRaza" prefWidth="90.0" text="Raza" />
+                        <TableColumn fx:id="colColor" prefWidth="70.0" text="Color" />
+                        <TableColumn fx:id="colEstado" prefWidth="80.0" text="Estado" />
+                        <TableColumn fx:id="colUbicacion" prefWidth="100.0" text="Ubicación" />
+                        <TableColumn fx:id="colFecha" prefWidth="100.0" text="Fecha registro" />
+                     </columns>
+                  </TableView>
+
+                  <Label fx:id="lblTotal" layoutX="350.0" layoutY="440.0" text="Total: 0 resultados" />
+
+                  <ImageView fx:id="imvMascota" fitHeight="100.0" fitWidth="130.0" layoutX="350.0" layoutY="465.0" preserveRatio="true" />
+
+                  <Button fx:id="btnVerDetalle" layoutX="838.0" layoutY="553.0" mnemonicParsing="false" onAction="#onVerDetalle" text="Ver detalle" />
+
+                  <Button fx:id="btnVolver" layoutX="861.0" layoutY="23.0" mnemonicParsing="false" onAction="#onVolver" text="Volver" />
+               </children>
+            </AnchorPane>
+
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>
