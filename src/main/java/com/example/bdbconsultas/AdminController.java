@@ -1,5 +1,28 @@
 package com.example.bdbconsultas;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
 public class AdminController {
     //Navegación entre ventanas de admin
+
+    public void cambiarEscena(String fxml, ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource(fxml));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+    }
+
+    public void switchVolver(ActionEvent event) throws IOException {
+        cambiarEscena("/com/example/bdbconsultas/LogIn.fxml" , event);
+    }
+
+    public void switchDonaciones(ActionEvent event) throws IOException {
+        cambiarEscena("/com/example/bdbconsultas/Donaciones.fxml",event);
+    }
 }

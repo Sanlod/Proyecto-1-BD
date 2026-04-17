@@ -1,9 +1,17 @@
 package com.example.bdbconsultas;
 import com.example.bdbconsultas.DAOs.EstadisticasDAO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.chart.*;
 import javafx.collections.*;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -39,6 +47,12 @@ public class EstadisticasController {
         dpEndDate.setValue(LocalDate.now());
         setupTableColumns();
         loadStats();
+    }
+
+    public void switchVolver(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/com/example/bdbconsultas/Usuario.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
     }
 
     private void setupTableColumns() {

@@ -18,7 +18,7 @@
          </columns>
       </TableView>
       <Text layoutX="29.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Donaciones" />
-      <Button layoutX="858.0" layoutY="14.0" mnemonicParsing="false" text="Volver" />
+      <Button layoutX="858.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchVolver" text="Volver" />
       <DatePicker fx:id="dpDesde" layoutX="30.0" layoutY="70.0" />
       <Text layoutX="37.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Desde" />
       <DatePicker fx:id="dpHasta" layoutX="30.0" layoutY="126.0" />

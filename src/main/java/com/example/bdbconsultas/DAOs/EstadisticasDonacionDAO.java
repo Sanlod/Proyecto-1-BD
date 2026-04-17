@@ -12,7 +12,7 @@ public class EstadisticasDonacionDAO {
 
         ObservableList<ObservableList<String>> results = FXCollections.observableArrayList();
 
-        results.addAll(fetchCursor("{ call SP_STATS_DONATIONS_BY_ASSOCIATION(?, ?, ?) }", startDate, endDate));
+        results.addAll(fetchCursor("{ call SP_STATS_DONABYASSO(?, ?, ?) }", startDate, endDate));
         results.addAll(fetchCursor("{ call SP_STATS_BOUNTIES_BY_RESCUER(?, ?, ?) }", startDate, endDate));
 
         return results;

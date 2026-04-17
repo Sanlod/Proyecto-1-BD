@@ -1,62 +1,51 @@
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.chart.*?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.bdbconsultas.EstadisticasDonacionController"
-            prefWidth="900" prefHeight="650">
+<BorderPane prefHeight="650" prefWidth="900" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.EstadisticasDonacionController">
 
-    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+    <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
     <top>
         <VBox spacing="16">
 
-            <Label text="Estadísticas de donaciones y recompensas"
-                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Estadísticas de donaciones y recompensas" />
 
             <!-- Filtro de fechas -->
-            <HBox spacing="12" alignment="CENTER_LEFT"
-                  style="-fx-background-color: white; -fx-border-color: #e0e0e0;
-                         -fx-border-radius: 8; -fx-background-radius: 8;
-                         -fx-padding: 12 16 12 16;">
-                <Label text="Desde"/>
-                <DatePicker fx:id="dpStartDate" prefWidth="140"/>
-                <Label text="Hasta"/>
-                <DatePicker fx:id="dpEndDate" prefWidth="140"/>
-                <Button text="Filtrar" onAction="#onFilter" style="-fx-cursor: hand;"/>
+            <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: white; -fx-border-color: #e0e0e0;                          -fx-border-radius: 8; -fx-background-radius: 8;                          -fx-padding: 12 16 12 16;">
+                <Label text="Desde" />
+                <DatePicker fx:id="dpStartDate" prefWidth="140" />
+                <Label text="Hasta" />
+                <DatePicker fx:id="dpEndDate" prefWidth="140" />
+                <Button onAction="#onFilter" style="-fx-cursor: hand;" text="Filtrar" />
             </HBox>
 
             <!-- Tarjetas de resumen -->
             <HBox spacing="12">
-                <VBox alignment="CENTER_LEFT" prefWidth="250"
-                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
-                             -fx-padding: 14 16 14 16;">
-                    <Label text="Total asociaciones"
-                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
-                    <Label fx:id="lblAssociationTotal"
-                           style="-fx-font-size: 22px; -fx-text-fill: #378ADD;"/>
-                    <Label fx:id="lblAssociationPct"
-                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                <VBox alignment="CENTER_LEFT" prefWidth="250" style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;                              -fx-padding: 14 16 14 16;">
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #777;" text="Total asociaciones" />
+                    <Label fx:id="lblAssociationTotal" style="-fx-font-size: 22px; -fx-text-fill: #378ADD;" />
+                    <Label fx:id="lblAssociationPct" style="-fx-font-size: 12px; -fx-text-fill: #777;" />
                 </VBox>
-                <VBox alignment="CENTER_LEFT" prefWidth="250"
-                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
-                             -fx-padding: 14 16 14 16;">
-                    <Label text="Total rescatistas"
-                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
-                    <Label fx:id="lblRescuerTotal"
-                           style="-fx-font-size: 22px; -fx-text-fill: #1D9E75;"/>
-                    <Label fx:id="lblRescuerPct"
-                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
+                <VBox alignment="CENTER_LEFT" prefWidth="250" style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;                              -fx-padding: 14 16 14 16;">
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #777;" text="Total rescatistas" />
+                    <Label fx:id="lblRescuerTotal" style="-fx-font-size: 22px; -fx-text-fill: #1D9E75;" />
+                    <Label fx:id="lblRescuerPct" style="-fx-font-size: 12px; -fx-text-fill: #777;" />
                 </VBox>
-                <VBox alignment="CENTER_LEFT" prefWidth="250"
-                      style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;
-                             -fx-padding: 14 16 14 16;">
-                    <Label text="Total general"
-                           style="-fx-font-size: 12px; -fx-text-fill: #777;"/>
-                    <Label fx:id="lblGrandTotal"
-                           style="-fx-font-size: 22px; -fx-text-fill: #534AB7;"/>
+                <VBox alignment="CENTER_LEFT" prefWidth="250" style="-fx-background-color: #f5f5f5; -fx-background-radius: 8;                              -fx-padding: 14 16 14 16;">
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #777;" text="Total general" />
+                    <Label fx:id="lblGrandTotal" style="-fx-font-size: 22px; -fx-text-fill: #534AB7;" />
                 </VBox>
             </HBox>
 
@@ -65,33 +54,34 @@
 
     <center>
         <HBox spacing="16" BorderPane.alignment="CENTER">
-            <HBox.margin><Insets top="16"/></HBox.margin>
+            <HBox.margin><Insets top="16" /></HBox.margin>
 
             <!-- Tabla -->
             <VBox spacing="8" HBox.hgrow="ALWAYS">
                 <TableView fx:id="tblStats" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colName"    text="Nombre"     prefWidth="180"/>
-                        <TableColumn fx:id="colType"    text="Tipo"       prefWidth="110"/>
-                        <TableColumn fx:id="colTotal"   text="Total"      prefWidth="100"/>
-                        <TableColumn fx:id="colPercent" text="Porcentaje" prefWidth="90"/>
+                        <TableColumn fx:id="colName" prefWidth="180" text="Nombre" />
+                        <TableColumn fx:id="colType" prefWidth="110" text="Tipo" />
+                        <TableColumn fx:id="colTotal" prefWidth="100" text="Total" />
+                        <TableColumn fx:id="colPercent" prefWidth="90" text="Porcentaje" />
                     </columns>
                 </TableView>
             </VBox>
 
             <!-- Gráfico -->
-            <BarChart fx:id="barChart" HBox.hgrow="ALWAYS"
-                      prefWidth="380" prefHeight="340"
-                      animated="false">
+            <BarChart fx:id="barChart" animated="false" prefHeight="340" prefWidth="380" HBox.hgrow="ALWAYS">
                 <xAxis>
-                    <CategoryAxis fx:id="xAxis" label="Entidad"/>
+                    <CategoryAxis label="Entidad" fx:id="xAxis" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis fx:id="yAxis" label="Total"/>
+                    <NumberAxis fx:id="yAxis" label="Total" />
                 </yAxis>
             </BarChart>
 
         </HBox>
     </center>
+   <bottom>
+      <Button mnemonicParsing="false" onAction="#switchVolver" text="Volver" BorderPane.alignment="CENTER" />
+   </bottom>
 
 </BorderPane>

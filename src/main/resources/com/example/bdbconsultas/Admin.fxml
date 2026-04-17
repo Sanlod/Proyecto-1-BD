@@ -10,13 +10,13 @@
 
         <Button layoutX="50.0" layoutY="80.0" mnemonicParsing="false" text="Registrar mascota" />
         <Button layoutX="200.0" layoutY="80.0" mnemonicParsing="false" text="Adopciones" />
-        <Button layoutX="350.0" layoutY="80.0" mnemonicParsing="false" text="Donaciones" />
+        <Button layoutX="350.0" layoutY="80.0" mnemonicParsing="false" onAction="#switchDonaciones" text="Donaciones" />
 
         <Button layoutX="50.0" layoutY="150.0" mnemonicParsing="false" text="Matches" />
         <Button layoutX="150.0" layoutY="150.0" mnemonicParsing="false" text="Personas" />
         <Button layoutX="250.0" layoutY="150.0" mnemonicParsing="false" text="Bitácoras" />
         <Button layoutX="350.0" layoutY="150.0" mnemonicParsing="false" text="Catálogos" />
 
-        <Button layoutX="480.0" layoutY="10.0" mnemonicParsing="false" text="Cerrar sesión" />
+        <Button layoutX="480.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchVolver" text="Cerrar sesión" />
     </children>
 </AnchorPane>

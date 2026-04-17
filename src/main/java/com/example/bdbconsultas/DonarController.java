@@ -8,6 +8,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -15,6 +19,7 @@ import javafx.scene.control.Spinner;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class DonarController {
@@ -28,6 +33,13 @@ public class DonarController {
     @FXML private ComboBox<ObservableList<String>> divisa;
 
     private DonacionesDAO dao = new DonacionesDAO();
+
+
+    public void switchVolver(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/com/example/bdbconsultas/Usuario.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+    }
 
     @FXML
     public void initialize() throws Exception {
