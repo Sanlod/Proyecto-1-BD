@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.example.bdbconsultas.DBConnection;
 import javafx.collections.*;
+import javafx.scene.control.Alert;
 
 public class DonacionesDAO {
 
@@ -86,5 +87,26 @@ public class DonacionesDAO {
             }
         }
         return new ResultadoConsulta(columnas, filas, total);
+    }
+
+    public void registrarDonacion(int monto, int porcentaje, int idPersona, int idAsociacion, int idCurrency) throws SQLException, ClassNotFoundException {
+        try (Connection con = DBConnection.getConnection();
+        CallableStatement cs = con.prepareCall("CALL SP_DONAR(?,?,?,?,?,?) ")){
+            cs.setInt(1, monto);
+            cs.setInt(2, porcentaje);
+            cs.setInt(3, idPersona);
+            cs.setInt(4, idAsociacion);
+            cs.setInt(5, idCurrency);
+            cs.registerOutParameter(6, Types.REF_CURSOR);
+            cs.execute();
+
+        }
+        catch (SQLException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error en la base de datos");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 }

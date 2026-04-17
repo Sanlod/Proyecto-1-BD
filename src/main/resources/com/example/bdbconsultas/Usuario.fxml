@@ -15,10 +15,12 @@
 
         <Button layoutX="40.0" layoutY="160.0" mnemonicParsing="false" text="BlackList" />
         <Button layoutX="140.0" layoutY="160.0" mnemonicParsing="false" text="Estadísticas" />
-        <Button layoutX="250.0" layoutY="160.0" mnemonicParsing="false" text="Reportes" />
+        <Button layoutX="250.0" layoutY="160.0" mnemonicParsing="false" text="Estad. Adopciones" />
 
         <Button layoutX="480.0" layoutY="10.0" mnemonicParsing="false" text="Cerrar sesión" />
 
         <Text layoutX="40.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resumen de cuenta" />
+      <Button layoutX="392.0" layoutY="160.0" mnemonicParsing="false" text="Estad. Matches" />
+      <Button layoutX="390.0" layoutY="214.0" mnemonicParsing="false" text="Estad. Donaciones" />
     </children>
 </AnchorPane>
