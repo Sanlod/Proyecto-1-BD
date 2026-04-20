@@ -125,6 +125,11 @@ public class MascotasDAO {
         return listadosCatalogo("SP_LISTAR_PROVINCIAS");
     }
 
+    public static ObservableList<ObservableList<String>> getDistritos()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_DISTRITOS");
+    }
+
     public static ObservableList<ObservableList<String>> getRazas()
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_RAZAS");
@@ -180,7 +185,7 @@ public class MascotasDAO {
             throws SQLException, ClassNotFoundException {
         ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
         try (Connection conn = DBConnection.getConnection();
-             CallableStatement cs = conn.prepareCall("{ CALL SP_LISTAR_DISTRITOS(?,?) }")) {
+             CallableStatement cs = conn.prepareCall("{ CALL SP_LISTAR_DISTRITOS_CANTON(?,?) }")) {
             cs.setString(1, idCanton == null || idCanton.isEmpty() ? null : idCanton);
             cs.registerOutParameter(2, Types.REF_CURSOR);
             cs.execute();
@@ -356,9 +361,9 @@ public class MascotasDAO {
             cs.execute();
 
             return cs.getInt(25);
-
         }
     }
+
     public static void registrarEnfermedadMascota(
             String idPet,
             String idDisease,
@@ -524,5 +529,9 @@ public class MascotasDAO {
             }
         }
         return null;
+    }
+    public static ObservableList<ObservableList<String>> getMascotas()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_MASCOTAS");
     }
 }

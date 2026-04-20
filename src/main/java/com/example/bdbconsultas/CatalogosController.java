@@ -1,16 +1,18 @@
 package com.example.bdbconsultas;
 
-import com.example.bdbconsultas.DAOs.MascotasDAO;
 import com.example.bdbconsultas.DAOs.AssociationDAO;
-import com.example.bdbconsultas.DBConnection;
+import com.example.bdbconsultas.DAOs.CatalogoDAO;
+import com.example.bdbconsultas.DAOs.MascotasDAO;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.collections.*;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.stage.Stage;
+
 import java.net.URL;
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class CatalogosController implements Initializable {
@@ -22,185 +24,241 @@ public class CatalogosController implements Initializable {
     @FXML private Spinner<Integer> spnIdEditar;
     @FXML private TextField txtNuevoValor;
     @FXML private TextField txtValorAgregar;
+
+    @FXML private ComboBox<String> cmbFiltroEspecial;
+    @FXML private TextField txtDescripcion;
+
     @FXML private Button btnEditar;
     @FXML private Button btnAgregar;
     @FXML private Button btnVolver;
+
+    private boolean esAdmin = false;
+
+    private ObservableList<ObservableList<String>> datosFiltroEspecial;
+
+    public void setEsAdmin(boolean esAdmin) {
+        this.esAdmin = esAdmin;
+        configurarAcceso();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarSpinner();
         cargarEntidades();
         configurarTabla();
+        cmbFiltroEspecial.setVisible(false);
+        txtDescripcion.setVisible(false);
+    }
+
+    private void configurarAcceso() {
+        btnEditar.setDisable(!esAdmin);
+        btnAgregar.setDisable(!esAdmin);
+        spnIdEditar.setDisable(!esAdmin);
+        txtNuevoValor.setDisable(!esAdmin);
+        txtValorAgregar.setDisable(!esAdmin);
+        cmbFiltroEspecial.setDisable(!esAdmin);
+        txtDescripcion.setDisable(!esAdmin);
     }
 
     private void configurarSpinner() {
-        SpinnerValueFactory<Integer> valueFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 9999, 1);
-        spnIdEditar.setValueFactory(valueFactory);
+        spnIdEditar.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 9999, 1));
         spnIdEditar.setEditable(true);
     }
 
     private void cargarEntidades() {
-        ObservableList<String> entidades = FXCollections.observableArrayList(
+        cmbEntidad.setItems(FXCollections.observableArrayList(
                 "Asociación", "Color", "Raza", "Tipo Mascota", "Estado",
-                "Severidad", "Nivel Energía", "Moneda", "Enfermedad",
-                "Tratamiento", "Medicamento", "Provincia"
-        );
-        cmbEntidad.setItems(entidades);
+                "Severidad", "Nivel Energía", "Dificultad Entrenamiento",
+                "Moneda", "Enfermedad", "Tratamiento", "Medicamento",
+                "Provincia", "Cantón", "Distrito"
+        ));
     }
 
     private void configurarTabla() {
-        colC1.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().get(0)));
-        colC2.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().get(1)));
+        colC1.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().get(0)));
+        colC2.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().get(1)));
     }
 
     @FXML
     private void onEntidadSeleccionada() {
         String entidad = cmbEntidad.getValue();
-        if (entidad != null) {
-            cargarDatos(entidad);
+        if (entidad == null) return;
+
+        cmbFiltroEspecial.setVisible(false);
+        txtDescripcion.setVisible(false);
+        datosFiltroEspecial = null;
+
+        try {
+            switch (entidad) {
+                case "Raza":
+                    cmbFiltroEspecial.setVisible(true);
+                    cmbFiltroEspecial.setPromptText("Tipo de mascota");
+                    datosFiltroEspecial = MascotasDAO.getTiposMascotas();
+                    break;
+                case "Enfermedad":
+                    txtDescripcion.setVisible(true);
+                    txtDescripcion.setPromptText("Descripción");
+                    break;
+                case "Cantón":
+                    cmbFiltroEspecial.setVisible(true);
+                    cmbFiltroEspecial.setPromptText("Provincia");
+                    datosFiltroEspecial = MascotasDAO.getProvincias();
+                    break;
+                case "Distrito":
+                    cmbFiltroEspecial.setVisible(true);
+                    cmbFiltroEspecial.setPromptText("Cantón");
+                    datosFiltroEspecial = MascotasDAO.getCantonesPorProvincia("");
+                    break;
+            }
+
+            if (datosFiltroEspecial != null) {
+                ObservableList<String> nombres = FXCollections.observableArrayList();
+                for (ObservableList<String> fila : datosFiltroEspecial) {
+                    nombres.add(fila.get(1));
+                }
+                cmbFiltroEspecial.setItems(nombres);
+            }
+
+        } catch (Exception e) {
+            mostrarError("Error al cargar filtros: " + e.getMessage());
         }
+
+        cargarDatos(entidad);
     }
 
     private void cargarDatos(String entidad) {
         try {
             ObservableList<ObservableList<String>> datos = null;
-
-            switch(entidad) {
-                case "Asociación":
-                    datos = AssociationDAO.getAsociaciones();
-                    break;
-                case "Color":
-                    datos = MascotasDAO.getColores();
-                    break;
-                case "Raza":
-                    datos = MascotasDAO.getRazas();
-                    break;
-                case "Tipo Mascota":
-                    datos = MascotasDAO.getTiposMascotas();
-                    break;
-                case "Estado":
-                    datos = MascotasDAO.getEstados();
-                    break;
-                case "Severidad":
-                    datos = MascotasDAO.getSeveridades();
-                    break;
-                case "Nivel Energía":
-                    datos = MascotasDAO.getNivEnergia();
-                    break;
-                case "Moneda":
-                    datos = MascotasDAO.getMonedas();
-                    break;
-                case "Enfermedad":
-                    datos = MascotasDAO.getEnfermedades();
-                    break;
-                case "Tratamiento":
-                    datos = MascotasDAO.getTratamientos();
-                    break;
-                case "Medicamento":
-                    datos = MascotasDAO.getMedicamentos();
-                    break;
-                case "Provincia":
-                    datos = MascotasDAO.getProvincias();
-                    break;
+            switch (entidad) {
+                case "Asociación":              datos = AssociationDAO.getAsociaciones(); break;
+                case "Color":                   datos = MascotasDAO.getColores(); break;
+                case "Raza":                    datos = MascotasDAO.getRazas(); break;
+                case "Tipo Mascota":            datos = MascotasDAO.getTiposMascotas(); break;
+                case "Estado":                  datos = MascotasDAO.getEstados(); break;
+                case "Severidad":               datos = MascotasDAO.getSeveridades(); break;
+                case "Nivel Energía":           datos = MascotasDAO.getNivEnergia(); break;
+                case "Dificultad Entrenamiento":datos = MascotasDAO.getDifEntrenamiento(); break;
+                case "Moneda":                  datos = MascotasDAO.getMonedas(); break;
+                case "Enfermedad":              datos = MascotasDAO.getEnfermedades(); break;
+                case "Tratamiento":             datos = MascotasDAO.getTratamientos(); break;
+                case "Medicamento":             datos = MascotasDAO.getMedicamentos(); break;
+                case "Provincia":               datos = MascotasDAO.getProvincias(); break;
+                case "Cantón":                  datos = MascotasDAO.getCantonesPorProvincia(""); break;
+                case "Distrito":                datos = MascotasDAO.getDistritos(); break;
             }
-
-            if (datos != null) {
-                tblDatos.setItems(datos);
-            }
-
-        } catch (SQLException | ClassNotFoundException e) {
+            if (datos != null) tblDatos.setItems(datos);
+        } catch (Exception e) {
             mostrarError("Error al cargar datos: " + e.getMessage());
         }
     }
 
     @FXML
     private void onEditar() {
-        Integer id = spnIdEditar.getValue();
-        String nuevoValor = txtNuevoValor.getText();
-        String entidad = cmbEntidad.getValue();
+        if (!esAdmin) { mostrarError("Sin permisos de administrador."); return; }
 
-        if (id == null) {
-            mostrarError("El ID a editar no puede estar vacío");
-            return;
-        }
-        if (!validarCampo(nuevoValor, "Nuevo valor")) return;
+        String entidad = cmbEntidad.getValue();
+        String nuevoValor = txtNuevoValor.getText().trim();
+        Integer id = spnIdEditar.getValue();
+
         if (!validarCampo(entidad, "Entidad")) return;
+        if (!validarCampo(nuevoValor, "Nuevo valor")) return;
 
         try {
-            String tabla = obtenerTabla(entidad);
-            String sql = "UPDATE " + tabla +
-                    " SET name = ?, modifiedBy = USER, modifiedAt = CURRENT_TIMESTAMP " +
-                    "WHERE id = ?";
-
-            try (Connection conn = DBConnection.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, nuevoValor);
-                ps.setInt(2, id);
-                ps.executeUpdate();
+            if (entidad.equals("Enfermedad")) {
+                String descripcion = txtDescripcion.getText().trim();
+                if (!validarCampo(descripcion, "Descripción")) return;
+                CatalogoDAO.editarEnfermedad(id, nuevoValor, descripcion);
+            } else {
+                CatalogoDAO.editarCatalogo(obtenerTabla(entidad), id, nuevoValor);
             }
-
             cargarDatos(entidad);
             limpiarCamposEdicion();
-            mostrarInfo("Registro actualizado correctamente");
-
-        } catch (SQLException | ClassNotFoundException e) {
+            mostrarInfo("Registro actualizado correctamente.");
+        } catch (Exception e) {
             mostrarError("Error al editar: " + e.getMessage());
         }
     }
 
     @FXML
     private void onAgregar() {
-        String valor = txtValorAgregar.getText();
-        String entidad = cmbEntidad.getValue();
+        if (!esAdmin) { mostrarError("Sin permisos de administrador."); return; }
 
-        if (!validarCampo(valor, "Valor a agregar")) return;
+        String entidad = cmbEntidad.getValue();
+        String valor = txtValorAgregar.getText().trim();
+
         if (!validarCampo(entidad, "Entidad")) return;
+        if (!validarCampo(valor, "Valor a agregar")) return;
 
         try {
-            String tabla = obtenerTabla(entidad);
-            String sql = "INSERT INTO " + tabla +
-                    " (id, name, createdBy, createdAt, modifiedBy, modifiedAt) " +
-                    "VALUES (SEQ_" + tabla.toUpperCase() + ".NEXTVAL, ?, USER, CURRENT_TIMESTAMP, USER, CURRENT_TIMESTAMP)";
-
-            try (Connection conn = DBConnection.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, valor);
-                ps.executeUpdate();
+            switch (entidad) {
+                case "Raza": {
+                    int idxTipo = cmbFiltroEspecial.getSelectionModel().getSelectedIndex();
+                    if (idxTipo < 0) { mostrarError("Seleccione el tipo de mascota."); return; }
+                    int idTipo = Integer.parseInt(datosFiltroEspecial.get(idxTipo).get(0));
+                    if (CatalogoDAO.existeRaza(valor, idTipo)) { mostrarError("Raza ya existe."); return; }
+                    CatalogoDAO.agregarRaza(valor, idTipo);
+                    break;
+                }
+                case "Enfermedad": {
+                    String desc = txtDescripcion.getText().trim();
+                    if (!validarCampo(desc, "Descripción")) return;
+                    if (CatalogoDAO.existeRegistro("Disease", valor)) { mostrarError("Enfermedad ya existe."); return; }
+                    CatalogoDAO.agregarEnfermedad(valor, desc);
+                    break;
+                }
+                case "Cantón": {
+                    int idxProv = cmbFiltroEspecial.getSelectionModel().getSelectedIndex();
+                    if (idxProv < 0) { mostrarError("Seleccione la provincia."); return; }
+                    int idProv = Integer.parseInt(datosFiltroEspecial.get(idxProv).get(0));
+                    CatalogoDAO.agregarCanton(valor, idProv);
+                    break;
+                }
+                case "Distrito": {
+                    int idxCan = cmbFiltroEspecial.getSelectionModel().getSelectedIndex();
+                    if (idxCan < 0) { mostrarError("Seleccione el cantón."); return; }
+                    int idCan = Integer.parseInt(datosFiltroEspecial.get(idxCan).get(0));
+                    CatalogoDAO.agregarDistrito(valor, idCan);
+                    break;
+                }
+                default: {
+                    String tabla = obtenerTabla(entidad);
+                    if (CatalogoDAO.existeRegistro(tabla, valor)) { mostrarError("Ya existe ese registro."); return; }
+                    CatalogoDAO.agregarCatalogo(tabla, valor);
+                }
             }
-
             cargarDatos(entidad);
             txtValorAgregar.clear();
-            mostrarInfo("Registro agregado correctamente");
-
-        } catch (SQLException | ClassNotFoundException e) {
+            mostrarInfo("Registro agregado correctamente.");
+        } catch (Exception e) {
             mostrarError("Error al agregar: " + e.getMessage());
         }
     }
 
     private String obtenerTabla(String entidad) {
-        switch(entidad) {
-            case "Asociación": return "Association";
-            case "Color": return "Colour";
-            case "Raza": return "Breed";
-            case "Tipo Mascota": return "PetType";
-            case "Estado": return "Status";
-            case "Severidad": return "Severity";
-            case "Nivel Energía": return "EnergyLevel";
-            case "Moneda": return "Currency";
-            case "Enfermedad": return "Disease";
-            case "Tratamiento": return "Treatment";
-            case "Medicamento": return "Medication";
-            case "Provincia": return "Province";
-            default: return null;
+        switch (entidad) {
+            case "Asociación":               return "Association";
+            case "Color":                    return "Colour";
+            case "Raza":                     return "Breed";
+            case "Tipo Mascota":             return "PetType";
+            case "Estado":                   return "State";
+            case "Severidad":                return "Severity";
+            case "Nivel Energía":            return "EnergyLevel";
+            case "Dificultad Entrenamiento": return "TrainingDifficulty";
+            case "Moneda":                   return "Currency";
+            case "Enfermedad":               return "Disease";
+            case "Tratamiento":              return "Treatment";
+            case "Medicamento":              return "Medication";
+            case "Provincia":                return "Province";
+            case "Cantón":                   return "Canton";
+            case "Distrito":                 return "District";
+            default:                         return null;
         }
     }
 
-    private boolean validarCampo(String valor, String nombreCampo) {
+    private boolean validarCampo(String valor, String nombre) {
         if (valor == null || valor.trim().isEmpty()) {
-            mostrarError("El campo '" + nombreCampo + "' no puede estar vacío");
+            mostrarError("El campo '" + nombre + "' no puede estar vacío.");
             return false;
         }
         return true;
@@ -209,27 +267,25 @@ public class CatalogosController implements Initializable {
     private void limpiarCamposEdicion() {
         spnIdEditar.getValueFactory().setValue(1);
         txtNuevoValor.clear();
+        txtDescripcion.clear();
     }
 
-    private void mostrarError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.show();
+    private void mostrarError(String msg) {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.show();
     }
 
-    private void mostrarInfo(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Información");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.show();
+    private void mostrarInfo(String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.show();
     }
 
     @FXML
     private void onVolver() {
-        Stage stage = (Stage) btnVolver.getScene().getWindow();
-        stage.close();
+        ((Stage) btnVolver.getScene().getWindow()).close();
     }
 }

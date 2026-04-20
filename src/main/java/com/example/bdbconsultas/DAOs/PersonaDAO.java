@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaDAO {
+
     public static class ResultadoConsulta {
         public final List<String> columnas;
         public final ObservableList<ObservableList<String>> filas;
@@ -22,7 +23,6 @@ public class PersonaDAO {
             this.total = total;
         }
     }
-
 
     public static ObservableList<ObservableList<String>> listadosCatalogo(String nomSP)
             throws SQLException, ClassNotFoundException {
@@ -46,6 +46,18 @@ public class PersonaDAO {
         return filas;
     }
 
+    //para combos(solo ID y nombre)
+    public static ObservableList<ObservableList<String>> getPersonas()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_PERSONAS");
+    }
+
+    //para CRUD(ID, nombre completo, lista negra, notas)
+    public static ObservableList<ObservableList<String>> getPersonasCRUD()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_PERSONAS_CRUD");
+    }
+
     public static ObservableList<ObservableList<String>> getPersonasListaNegra()
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_PERSONASLISTANEGRA");
@@ -55,10 +67,6 @@ public class PersonaDAO {
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_NOTASPERSONA");
     }
-    public static ObservableList<ObservableList<String>> getPersonas()
-            throws SQLException, ClassNotFoundException {
-        return listadosCatalogo("SP_LISTAR_PERSONAS");
-    }
 
     public static void reportarListaNegra(
             String idPersona,
@@ -66,10 +74,8 @@ public class PersonaDAO {
 
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall("{ CALL SP_REPORTAR_LISTANEGRA(?,?) }")) {
-
             cs.setString(1, idPersona);
             cs.setString(2, createdBy);
-
             cs.execute();
         }
     }
@@ -85,12 +91,12 @@ public class PersonaDAO {
         int total = 0;
 
         try (Connection conn = DBConnection.getConnection();
-             CallableStatement cs = conn.prepareCall("{ CALL SP_CONSULTAR_PERSONAS(?,?,?,?,?) }")) {
+             CallableStatement cs = conn.prepareCall("{ CALL SP_CONSULTAR_PERSONAS(?,?,?,?,?,?) }")) {
 
-            cs.setString(1, nombre.isEmpty()          ? null : nombre);
-            cs.setString(2, primerApellido.isEmpty()  ? null : primerApellido);
-            cs.setString(3, segundoApellido.isEmpty() ? null : segundoApellido);
-            cs.setString(4, enListaNegra.isEmpty()    ? null : enListaNegra);
+            cs.setString(1, nombre == null || nombre.isEmpty() ? null : nombre);
+            cs.setString(2, primerApellido == null || primerApellido.isEmpty() ? null : primerApellido);
+            cs.setString(3, segundoApellido == null || segundoApellido.isEmpty() ? null : segundoApellido);
+            cs.setString(4, enListaNegra == null || enListaNegra.isEmpty() ? null : enListaNegra);
 
             cs.registerOutParameter(5, Types.REF_CURSOR);
             cs.registerOutParameter(6, Types.NUMERIC);
@@ -126,39 +132,77 @@ public class PersonaDAO {
 
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall("{ CALL SP_REGISTRAR_CALIFICACION(?,?,?,?) }")) {
-
             cs.setString(1, idPersona);
             cs.setString(2, calificacion);
-            cs.setString(3, notas.isEmpty() ? null : notas);
+            cs.setString(3, notas == null || notas.isEmpty() ? null : notas);
             cs.setString(4, modifiedBy);
-
             cs.execute();
         }
     }
-
 
     public static void registrarPersona(
             String primerNombre,
             String segundoNombre,
             String primerApellido,
-            String segundoApellido,
-            String correo,
-            String telefono) throws SQLException, ClassNotFoundException {
+            String segundoApellido) throws SQLException, ClassNotFoundException {
 
         try (Connection conn = DBConnection.getConnection();
-             CallableStatement cs = conn.prepareCall("{ CALL SP_REGISTRAR_PERSONA(?,?,?,?,?,?) }")) {
-
+             CallableStatement cs = conn.prepareCall("{ CALL SP_REGISTRAR_PERSONA(?,?,?,?) }")) {
             cs.setString(1, primerNombre);
-            cs.setString(2, segundoNombre.isEmpty()          ? null : segundoNombre);
+            cs.setString(2, segundoNombre == null || segundoNombre.isEmpty() ? null : segundoNombre);
             cs.setString(3, primerApellido);
-            cs.setString(4, segundoApellido);
-            cs.setString(5, correo);
-            cs.setString(6, telefono);
-
+            cs.setString(4, segundoApellido == null || segundoApellido.isEmpty() ? null : segundoApellido);
             cs.execute();
-
         }
     }
 
+    public static void actualizarPersona(
+            int id,
+            String primerNombre,
+            String segundoNombre,
+            String primerApellido,
+            String segundoApellido,
+            String notas) throws SQLException, ClassNotFoundException {
 
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_ACTUALIZAR_PERSONA(?,?,?,?,?,?) }")) {
+
+            cs.setInt(1, id);
+            cs.setString(2, primerNombre);
+            cs.setString(3, segundoNombre == null || segundoNombre.isEmpty() ? null : segundoNombre);
+            cs.setString(4, primerApellido);
+            cs.setString(5, segundoApellido == null || segundoApellido.isEmpty() ? null : segundoApellido);
+            cs.setString(6, notas == null || notas.isEmpty() ? null : notas);
+
+            cs.execute();
+        }
+    }
+
+    public static void eliminarPersona(int id) throws SQLException, ClassNotFoundException {
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_ELIMINAR_PERSONA(?) }")) {
+            cs.setInt(1, id);
+            cs.execute();
+        }
+    }
+
+    public static String obtenerCalificacionPersona(String idPersona)
+            throws SQLException, ClassNotFoundException {
+
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_OBTENER_CALIFICACION_PERSONA(?,?) }")) {
+
+            cs.setInt(1, Integer.parseInt(idPersona));
+            cs.registerOutParameter(2, Types.REF_CURSOR);
+            cs.execute();
+
+            try (ResultSet rs = (ResultSet) cs.getObject(2)) {
+                if (rs.next()) {
+                    int rating = rs.getInt("rating");
+                    return rating > 0 ? String.valueOf(rating) : null;
+                }
+            }
+        }
+        return null;
+    }
 }
