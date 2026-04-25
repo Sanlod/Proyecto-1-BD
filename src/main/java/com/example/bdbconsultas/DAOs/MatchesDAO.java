@@ -66,19 +66,21 @@ public class MatchesDAO {
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall("{ CALL SP_CAMBIAR_ESTADOMATCH(?,?,?) }")) {
 
-            cs.setString(1, idMatch);
-            cs.setString(2, idEstado);
+            cs.setInt(1, Integer.parseInt(idMatch));
+            cs.setInt(2, Integer.parseInt(idEstado));
             cs.setString(3, modifiedBy);
 
             cs.execute();
         }
     }
 
-    public MatchesDAO.ResultadoConsulta consultarMatches(
+    public static ResultadoConsulta consultarMatches(
             String idMascotaPerdida,
-            String idTipoMascota,
+            String idTipo,
             String idRaza,
             String nombre,
+            String chip,
+            String idColor,
             String idEstado,
             String idProvincia,
             String idCanton,
@@ -97,26 +99,25 @@ public class MatchesDAO {
 
                 // Parámetros IN — si viene vacío manda NULL
 
-                cs.setString(1, idMascotaPerdida.isEmpty()    ? null : idMascotaPerdida);
-                cs.setString(2, idTipoMascota.isEmpty()  ? null : idTipoMascota);
-                cs.setString(3, idRaza.isEmpty()  ? null : idRaza);
-                cs.setString(4, nombre.isEmpty()  ? null : nombre);
-                cs.setString(5, idEstado.isEmpty()  ? null : idEstado);
-                cs.setString(6, idProvincia.isEmpty()  ? null : idProvincia);
-                cs.setString(7, idCanton.isEmpty()  ? null : idCanton);
-                cs.setString(8, idDistrito.isEmpty()  ? null : idDistrito);
-                cs.setString(9, idAsociacion.isEmpty() ? null : idAsociacion);
+                cs.setString(1,  idMascotaPerdida == null || idMascotaPerdida.isEmpty() ? null : idMascotaPerdida);
+                cs.setString(2,  idTipo      == null || idTipo.isEmpty()      ? null : idTipo);
+                cs.setString(3,  idRaza      == null || idRaza.isEmpty()      ? null : idRaza);
+                cs.setString(4,  nombre      == null || nombre.isEmpty()      ? null : nombre);
+                cs.setString(5,  chip        == null || chip.isEmpty()        ? null : chip);
+                cs.setString(6,  idColor     == null || idColor.isEmpty()     ? null : idColor);
+                cs.setString(7,  idEstado    == null || idEstado.isEmpty()    ? null : idEstado);
+                cs.setString(8,  idProvincia == null || idProvincia.isEmpty() ? null : idProvincia);
+                cs.setString(9,  idCanton    == null || idCanton.isEmpty()    ? null : idCanton);
+                cs.setString(10, idDistrito  == null || idDistrito.isEmpty()  ? null : idDistrito);
+                cs.setString(11, idAsociacion == null || idAsociacion.isEmpty() ? null : idAsociacion);
 
-
-                // Parámetros OUT
-                cs.registerOutParameter(10, Types.REF_CURSOR);
-                cs.registerOutParameter(11, Types.NUMERIC);
-
+                cs.registerOutParameter(12, Types.REF_CURSOR);
+                cs.registerOutParameter(13, Types.NUMERIC);
                 cs.execute();
 
-                total = cs.getInt(11);
+                total = cs.getInt(13);
 
-                try (ResultSet rs = (ResultSet) cs.getObject(10)) {
+                try (ResultSet rs = (ResultSet) cs.getObject(12)) {
                     ResultSetMetaData meta = rs.getMetaData();
                     int numCols = meta.getColumnCount();
 
@@ -137,6 +138,6 @@ public class MatchesDAO {
                 }
             }
         }
-        return new MatchesDAO.ResultadoConsulta(columnas, filas, total);
+        return new ResultadoConsulta(columnas, filas, total);
     }
 }

@@ -55,7 +55,10 @@ public class RecompensasDAO {
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall("{ CALL SP_CONSULTAR_RECOMPENSAS(?,?,?) }")) {
 
-            cs.setString(1, idPet);
+            if (idPet != null && !idPet.isEmpty())
+                cs.setString(1, idPet);
+            else
+                cs.setNull(1, Types.VARCHAR);
 
             cs.registerOutParameter(2, Types.REF_CURSOR);
             cs.registerOutParameter(3, Types.NUMERIC);

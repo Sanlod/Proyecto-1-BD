@@ -27,6 +27,28 @@ public class AdopcionesDAO {
         }
     }
 
+    public static ObservableList<ObservableList<String>> listadosCatalogo(String nomSP)
+            throws SQLException, ClassNotFoundException {
+        ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL " + nomSP + " (?) }")) {
+            cs.registerOutParameter(1, Types.REF_CURSOR);
+            cs.execute();
+            try (ResultSet rs = (ResultSet) cs.getObject(1)) {
+                int numCols = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    ObservableList<String> fila = FXCollections.observableArrayList();
+                    for (int i = 1; i <= numCols; i++) {
+                        Object val = rs.getObject(i);
+                        fila.add(val != null ? val.toString() : "");
+                    }
+                    filas.add(fila);
+                }
+            }
+        }
+        return filas;
+    }
+
 
     public static ObservableList<ObservableList<String>> getMascotas()
             throws SQLException, ClassNotFoundException {
@@ -72,7 +94,7 @@ public class AdopcionesDAO {
         return filas;
     }
 
-    public ResultadoConsulta consultarSolicitudes(
+    public static ResultadoConsulta consultarSolicitudes(
             LocalDate desde, LocalDate hasta,
             String idMascota, String idAdoptante) throws SQLException, ClassNotFoundException {
 
@@ -83,7 +105,6 @@ public class AdopcionesDAO {
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall("{ CALL SP_CONSULTAR_SOLICITUDES(?,?,?,?,?,?) }")) {
 
-            // Manejo de fechas nulas o vacías para evitar errores en Oracle
             cs.setObject(1, desde != null ? Date.valueOf(desde) : null);
             cs.setObject(2, hasta != null ? Date.valueOf(hasta) : null);
             cs.setString(3, (idMascota == null || idMascota.equals("0")) ? null : idMascota);
@@ -115,7 +136,7 @@ public class AdopcionesDAO {
     }
 
 
-    public boolean actualizarEstadoSolicitud(String idSolicitud, String nuevoEstado, String usuarioAdmin)
+    public static boolean actualizarEstadoSolicitud(String idSolicitud, String nuevoEstado, String usuarioAdmin)
             throws SQLException, ClassNotFoundException {
 
         try (Connection conn = DBConnection.getConnection();
@@ -131,17 +152,88 @@ public class AdopcionesDAO {
         }
     }
 
-    public boolean registrarAdopcion(String idMascota, String idAdoptante, int calificacion, String notas)
-            throws SQLException, ClassNotFoundException {
+    public static int registrarAdopcion(
+            String idMascota, String idAdoptante,
+            String notas, byte[] foto, byte[] fotoNueva,
+            String createdBy) throws SQLException, ClassNotFoundException {
+
         try (Connection conn = DBConnection.getConnection();
-             CallableStatement cs = conn.prepareCall("{ CALL SP_REGISTRAR_ADOPCION(?,?,?,?,?) }")) {
+             CallableStatement cs = conn.prepareCall(
+                     "{ CALL SP_REGISTRAR_ADOPCION(?,?,?,?,?,?,?,?) }")) {
+
             cs.setString(1, idMascota);
             cs.setString(2, idAdoptante);
-            cs.setInt(3, calificacion);
-            cs.setString(4, notas);
-            cs.registerOutParameter(5, Types.NUMERIC);
+            cs.setString(3, notas.isEmpty() ? null : notas);
+
+            if (foto != null) cs.setBytes(4, foto);
+            else cs.setNull(4, Types.BLOB);
+
+            if (fotoNueva != null) cs.setBytes(5, fotoNueva);
+            else cs.setNull(5, Types.BLOB);
+
+            cs.setString(6, createdBy);
+            cs.registerOutParameter(7, Types.NUMERIC);
+            cs.registerOutParameter(8, Types.NUMERIC);
             cs.execute();
-            return cs.getInt(5) == 0;
+
+            return cs.getInt(7) == 0 ? cs.getInt(8) : -1;
         }
+    }
+
+    public static ObservableList<ObservableList<String>> getPreguntas()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_PREGUNTAS");
+    }
+
+    public static void registrarRespuesta(
+            String idPregunta, String idRequest,
+            String valor, String createdBy)
+            throws SQLException, ClassNotFoundException {
+
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall(
+                     "{ CALL SP_REGISTRAR_RESPUESTA(?,?,?,?) }")) {
+            cs.setString(1, idPregunta);
+            cs.setString(2, idRequest);
+            cs.setString(3, valor);
+            cs.setString(4, createdBy);
+            cs.execute();
+        }
+    }
+    public static ObservableList<ObservableList<String>> getEstadosSolicitud()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_ESTADOS_SOLICITUD");
+    }
+
+    public static ResultadoConsulta seguimientoMascota(String idPet)
+            throws SQLException, ClassNotFoundException {
+
+        List<String> columnas = new ArrayList<>();
+        ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
+        int total = 0;
+
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_SEGUIMIENTO_MASCOTA(?,?) }")) {
+
+            cs.setString(1, idPet);
+            cs.registerOutParameter(2, Types.REF_CURSOR);
+            cs.execute();
+
+            try (ResultSet rs = (ResultSet) cs.getObject(2)) {
+                ResultSetMetaData meta = rs.getMetaData();
+                int numCols = meta.getColumnCount();
+                for (int i = 1; i <= numCols; i++) columnas.add(meta.getColumnLabel(i));
+                while (rs.next()) {
+                    ObservableList<String> fila = FXCollections.observableArrayList();
+                    for (int i = 1; i <= numCols; i++) {
+                        Object val = rs.getObject(i);
+                        fila.add(val != null ? val.toString() : "");
+                    }
+                    filas.add(fila);
+                    total++;
+                }
+            }
+        }
+        return new ResultadoConsulta(columnas, filas, total);
     }
 }

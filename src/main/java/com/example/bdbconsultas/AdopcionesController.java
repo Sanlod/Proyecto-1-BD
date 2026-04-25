@@ -1,15 +1,13 @@
 package com.example.bdbconsultas;
 
 import com.example.bdbconsultas.DAOs.AdopcionesDAO;
-//import com.example.bdbconsultas.models.Sesion; //hipotetico para manejo de usuario
+import com.example.bdbconsultas.DAOs.PersonaDAO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
-import java.sql.SQLException;
 import java.time.LocalDate;
-
 
 public class AdopcionesController {
 
@@ -19,55 +17,78 @@ public class AdopcionesController {
     @FXML private ComboBox<ObservableList<String>> cbAdoptante;
     @FXML private Label lblResultados;
     @FXML private TableView<ObservableList<String>> tablaAdopciones;
-
     @FXML private Button btnAprobar;
     @FXML private Button btnRechazar;
+    @FXML private Button btnVolver;
 
-    private final AdopcionesDAO dao = new AdopcionesDAO();
+    private ObservableList<ObservableList<String>> datosEstados;
+    private boolean esAdmin = false;
 
+    public void setEsAdmin(boolean esAdmin) {
+        this.esAdmin = esAdmin;
+        btnAprobar.setVisible(esAdmin);
+        btnRechazar.setVisible(esAdmin);
+    }
 
     @FXML
     public void initialize() {
         dpDesde.setValue(LocalDate.now().withDayOfYear(1));
         dpHasta.setValue(LocalDate.now());
-
-        cargarCombosFiltro();
-
-        /* implementacion admin
-        boolean isAdmin = Sesion.getUsuarioActual().getRol().equalsIgnoreCase("ADMIN");
-        btnAprobar.setVisible(isAdmin);
-        btnRechazar.setVisible(isAdmin);
-
-        //necesita lista negra para no dar error
-        tablaAdopciones.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                verificarListaNegra(newVal);
-            }
-        });
-
-         */
+        btnAprobar.setVisible(false);
+        btnRechazar.setVisible(false);
+        cargarCombos();
     }
 
-    private void cargarCombosFiltro() {
+    private void cargarCombos() {
         try {
+            // Estados
+            datosEstados = AdopcionesDAO.getEstadosSolicitud();
+
+            // Mascotas
             ObservableList<ObservableList<String>> mascotas = FXCollections.observableArrayList();
             mascotas.add(FXCollections.observableArrayList("0", "Todos"));
             mascotas.addAll(AdopcionesDAO.getMascotas());
             cbMascota.setItems(mascotas);
             cbMascota.getSelectionModel().selectFirst();
-            cbMascota.setConverter(crearConverter());
+            cbMascota.setConverter(converter());
 
+            // Adoptantes
             ObservableList<ObservableList<String>> adoptantes = FXCollections.observableArrayList();
             adoptantes.add(FXCollections.observableArrayList("0", "Todos"));
             adoptantes.addAll(AdopcionesDAO.getAdoptantes());
             cbAdoptante.setItems(adoptantes);
             cbAdoptante.getSelectionModel().selectFirst();
-            cbAdoptante.setConverter(crearConverter());
+            cbAdoptante.setConverter(converter());
+
+            // Listener lista negra
+            cbAdoptante.getSelectionModel().selectedItemProperty().addListener((obs, old, nuevo) -> {
+                if (nuevo != null && !nuevo.get(0).equals("0")) {
+                    verificarListaNegra(nuevo.get(0));
+                }
+            });
+
         } catch (Exception e) {
-            mostrarAlerta("Error de carga", e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error al cargar filtros", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
+    private void verificarListaNegra(String idPersona) {
+        try {
+            String calificacion = PersonaDAO.obtenerCalificacionPersona(idPersona);
+            ObservableList<ObservableList<String>> listaNegra = PersonaDAO.getPersonasListaNegra();
+            boolean enListaNegra = listaNegra.stream()
+                    .anyMatch(p -> p.get(0).equals(idPersona));
+
+            if (enListaNegra) {
+                mostrarAlerta("Lista Negra",
+                        "Esta persona está en lista negra." +
+                                (calificacion != null ? " Calificación: " + calificacion : ""),
+                        Alert.AlertType.WARNING);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
 
     @FXML
     public void onBuscar() {
@@ -75,62 +96,88 @@ public class AdopcionesController {
             String idM = cbMascota.getValue().get(0);
             String idA = cbAdoptante.getValue().get(0);
 
-            AdopcionesDAO.ResultadoConsulta res = dao.consultarSolicitudes(
+            AdopcionesDAO.ResultadoConsulta res = AdopcionesDAO.consultarSolicitudes(
                     dpDesde.getValue(), dpHasta.getValue(), idM, idA);
 
-            configurarColumnasDinamicas((ObservableList<String>) res.columnas);
+            configurarColumnas(res.columnas);
             tablaAdopciones.setItems(res.filas);
-            lblResultados.setText("Total registros: " + res.total); // Requerimiento 5.f
+            lblResultados.setText("Total: " + res.total);
 
         } catch (Exception e) {
             mostrarAlerta("Error de consulta", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-   /* (igual tiene que ver con tener la clase de sesion o log in para verificar nombre del logeado)
+    @FXML
     public void onAprobar() {
+        gestionarSolicitud("APROBADA");
+    }
+
+    @FXML
+    public void onRechazar() {
+        gestionarSolicitud("RECHAZADA");
+    }
+
+    private void gestionarSolicitud(String nombreEstado) {
         ObservableList<String> seleccion = tablaAdopciones.getSelectionModel().getSelectedItem();
         if (seleccion == null) {
-            mostrarAlerta("Atención", "Seleccione una solicitud de la tabla.", Alert.AlertType.WARNING);
+            mostrarAlerta("Atención", "Seleccione una solicitud.", Alert.AlertType.WARNING);
             return;
         }
-
         try {
-            boolean exito = dao.actualizarEstadoSolicitud(seleccion.get(0), "APROBADA", Sesion.getUsuarioActual().getNombre());
-            if (exito) {
-                mostrarAlerta("Éxito", "Adopción aprobada. El estado de la mascota ha cambiado.", Alert.AlertType.INFORMATION);
+            String idEstado = datosEstados.stream()
+                    .filter(e -> e.get(1).equalsIgnoreCase(nombreEstado))
+                    .findFirst()
+                    .map(e -> e.get(0))
+                    .orElse(null);
+
+            if (idEstado == null) {
+                mostrarAlerta("Error", "Estado no encontrado.", Alert.AlertType.ERROR);
+                return;
+            }
+
+            boolean ok = AdopcionesDAO.actualizarEstadoSolicitud(
+                    seleccion.get(0), idEstado, "SYSTEM");
+            if (ok) {
+                mostrarAlerta("Éxito", "Estado actualizado.", Alert.AlertType.INFORMATION);
                 onBuscar();
+            } else {
+                mostrarAlerta("Error", "No se pudo actualizar.", Alert.AlertType.ERROR);
             }
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo procesar: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-    */
 
-    private void verificarListaNegra(ObservableList<String> fila) {
-        //necesita dao de lista negra
-    }
-
-    private void configurarColumnasDinamicas(ObservableList<String> nombresColumnas) {
+    private void configurarColumnas(java.util.List<String> columnas) {
         tablaAdopciones.getColumns().clear();
-        for (int i = 0; i < nombresColumnas.size(); i++) {
-            final int colIndex = i;
-            TableColumn<ObservableList<String>, String> col = new TableColumn<>(nombresColumnas.get(i));
-            col.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get(colIndex)));
+        for (int i = 0; i < columnas.size(); i++) {
+            final int idx = i;
+            TableColumn<ObservableList<String>, String> col = new TableColumn<>(columnas.get(i));
+            col.setCellValueFactory(data ->
+                    new SimpleStringProperty(data.getValue().get(idx)));
             tablaAdopciones.getColumns().add(col);
         }
     }
 
-    private StringConverter<ObservableList<String>> crearConverter() {
+    private StringConverter<ObservableList<String>> converter() {
         return new StringConverter<>() {
-            @Override public String toString(ObservableList<String> f) { return f != null ? f.get(1) : ""; }
+            @Override public String toString(ObservableList<String> f) {
+                return f != null ? f.get(1) : "";
+            }
             @Override public ObservableList<String> fromString(String s) { return null; }
         };
+    }
+
+    @FXML
+    private void onVolver() {
+        ((javafx.stage.Stage) btnVolver.getScene().getWindow()).close();
     }
 
     private void mostrarAlerta(String titulo, String msg, Alert.AlertType tipo) {
         Alert a = new Alert(tipo);
         a.setTitle(titulo);
+        a.setHeaderText(null);
         a.setContentText(msg);
         a.showAndWait();
     }

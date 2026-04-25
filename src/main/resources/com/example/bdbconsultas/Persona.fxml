@@ -1,19 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.PersonaController">
+    <children>
+        <Label layoutX="14.0" layoutY="14.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Manejo de personas" />
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CONTROLLER_NAME">
-   <children>
-      <TableView layoutX="26.0" layoutY="35.0" prefHeight="325.0" prefWidth="506.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-      </TableView>
-      <Button layoutX="546.0" layoutY="5.0" mnemonicParsing="false" text="Volver" />
-   </children>
+        <TableView fx:id="tblDatos" layoutX="233.0" layoutY="52.0" prefHeight="350.0" prefWidth="506.0">
+            <columns>
+                <TableColumn fx:id="colId" prefWidth="96.66667175292969" text="ID" />
+                <TableColumn fx:id="colNombreCompleto" prefWidth="407.33331298828125" text="Nombre completo" />
+            </columns>
+        </TableView>
+
+        <Button fx:id="btnNuevo" layoutX="23.0" layoutY="107.0" mnemonicParsing="false" onAction="#onNuevo" prefWidth="160.0" text="Nuevo" />
+        <Button fx:id="btnEditar" layoutX="23.0" layoutY="147.0" mnemonicParsing="false" onAction="#onEditar" prefWidth="160.0" text="Editar" />
+        <Button fx:id="btnEliminar" layoutX="23.0" layoutY="187.0" mnemonicParsing="false" onAction="#onEliminar" prefWidth="160.0" text="Eliminar" />
+        <Button fx:id="btnGuardar" layoutX="23.0" layoutY="227.0" mnemonicParsing="false" onAction="#onGuardar" prefWidth="160.0" text="Guardar" />
+        <Button fx:id="btnCancelar" layoutX="23.0" layoutY="267.0" mnemonicParsing="false" onAction="#onCancelar" prefWidth="160.0" text="Cancelar" />
+        <Button fx:id="btnReportarListaNegra" layoutX="23.0" layoutY="317.0" mnemonicParsing="false" onAction="#onReportarListaNegra" prefWidth="160.0" text="Reportar lista negra" />
+        <Button fx:id="btnVolver" layoutX="722.0" layoutY="14.0" mnemonicParsing="false" onAction="#onVolver" prefHeight="17.0" prefWidth="57.0" text="Volver" />
+
+        <Label layoutX="200.0" layoutY="410.0" text="ID:" />
+        <TextField fx:id="txtId" editable="false" layoutX="300.0" layoutY="406.0" prefHeight="25.0" prefWidth="150.0" />
+
+        <Label layoutX="200.0" layoutY="440.0" text="Primer nombre:" />
+        <TextField fx:id="txtPrimerNombre" layoutX="300.0" layoutY="436.0" prefWidth="150.0" />
+
+        <Label layoutX="469.0" layoutY="412.0" text="Segundo nombre:" />
+        <TextField fx:id="txtSegundoNombre" layoutX="589.0" layoutY="408.0" prefWidth="150.0" />
+
+        <Label layoutX="200.0" layoutY="470.0" text="Primer apellido:" />
+        <TextField fx:id="txtPrimerApellido" layoutX="300.0" layoutY="466.0" prefWidth="150.0" />
+
+        <Label layoutX="469.0" layoutY="442.0" text="Segundo apellido:" />
+        <TextField fx:id="txtSegundoApellido" layoutX="589.0" layoutY="438.0" prefWidth="150.0" />
+
+        <Label layoutX="200.0" layoutY="500.0" text="Notas:" />
+        <TextArea fx:id="txtNotas" layoutX="301.0" layoutY="500.0" prefHeight="80.0" prefWidth="275.0" />
+
+        <CheckBox fx:id="chkListaNegra" layoutX="590.0" layoutY="500.0" mnemonicParsing="false" text="En lista negra" />
+      <Label layoutX="469.0" layoutY="470.0" text="Calificación:" />
+      <TextField fx:id="txtCalificacion" layoutX="589.0" layoutY="466.0" prefWidth="150.0" />
+    </children>
 </AnchorPane>
