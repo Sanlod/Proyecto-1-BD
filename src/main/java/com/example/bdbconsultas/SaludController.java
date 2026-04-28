@@ -9,10 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -34,6 +31,8 @@ public class SaludController  implements Initializable {
     public ComboBox<ObservableList<String>> seleccTratamiento;
     public ComboBox<ObservableList<String>> seleccMedicina;
     public TextField dosis;
+    public DatePicker startDate;
+    public DatePicker endDate;
     private MascotasDAO mascotasDAO = MascotasDAO.getMascotasDAO();
 
     public void switchVolver(ActionEvent event) throws IOException {
@@ -122,9 +121,11 @@ public class SaludController  implements Initializable {
     public void buscar() throws SQLException, ClassNotFoundException {
         String nombreStr;
         String chipStr;
-        String medicina;
-        String tratamiento;
-        String idEnfermedad;
+        Integer medicina;
+        Integer tratamiento;
+        Integer idEnfermedad;
+        LocalDate fechaInicio;
+        LocalDate fechaFin;
         if(!nombre.getText().isEmpty()){
             nombreStr = nombre.getText();
         }else{nombreStr = null;}
@@ -133,20 +134,37 @@ public class SaludController  implements Initializable {
             chipStr = chip.getText();
         }else{chipStr = null;}
 
-        if(!buscMedicina.getValue().toString().isEmpty()){
-            medicina = buscMedicina.getValue().getFirst();
+        if(buscMedicina.getSelectionModel().getSelectedItem() != null){
+            medicina = Integer.valueOf(buscMedicina.getValue().getFirst());
         }else{medicina = null;}
 
-        if(!buscTratamiento.getValue().toString().isEmpty()){
-            tratamiento = buscTratamiento.getValue().getFirst();
+        if(buscTratamiento.getSelectionModel().getSelectedItem() != null){
+            tratamiento = Integer.valueOf(buscTratamiento.getValue().getFirst());
         }else{tratamiento = null;}
 
-        if(!enfermedad.getValue().toString().isEmpty()){
-            idEnfermedad = enfermedad.getValue().getFirst();
+        if(enfermedad.getSelectionModel().getSelectedItem() != null){
+            idEnfermedad = Integer.valueOf(enfermedad.getValue().getFirst());
         }else{idEnfermedad = null;}
 
-        MascotasDAO.ResultadoConsulta mascotas = mascotasDAO.consultarMascotas(null, null, nombreStr, chipStr, null, null,
-                null, null, null, null, null, null, null);
+        if(startDate.getValue() != null){
+            fechaInicio = startDate.getValue();
+        }else{ fechaInicio = null;}
+
+        if(endDate.getValue() != null){
+            fechaFin = endDate.getValue();
+        }else{ fechaFin = null;}
+
+        MascotasDAO.ResultadoConsulta mascotas = mascotasDAO.consultarSalud(nombreStr,chipStr,medicina,tratamiento,idEnfermedad,fechaInicio,fechaFin);
+
+        tablaMascotas.getColumns().clear();
+        for (int i = 0; i < mascotas.columnas.size(); i++) {
+            final int idx = i;
+            TableColumn<ObservableList<String>, String> col = new TableColumn<>(mascotas.columnas.get(idx));
+            col.setCellValueFactory(c ->
+                    new javafx.beans.property.SimpleStringProperty(c.getValue().get(idx)));
+            tablaMascotas.getColumns().add(col);
+        }
+        tablaMascotas.setItems(mascotas.filas);
     }
 
     public void asignarMedicina() throws SQLException, ClassNotFoundException {

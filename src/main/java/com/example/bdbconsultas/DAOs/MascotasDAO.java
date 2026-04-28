@@ -215,6 +215,72 @@ public class MascotasDAO {
     }
 
 
+    public ResultadoConsulta consultarSalud(
+            String nombre,
+            String chip,
+            Integer idMedicina,
+            Integer idTreatment,
+            Integer idDisease,
+            LocalDate fechaInicio,
+            LocalDate fechaFin
+            ) throws SQLException, ClassNotFoundException {
+        List<String> columnas = new ArrayList<>();
+        ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
+        int total = 0;
+
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall(
+                     "{ CALL SP_CONSULTAR_SALUD(?,?,?,?,?,?,?,?,?) }")) {
+
+            cs.setObject(1, nombre, Types.VARCHAR);
+            cs.setObject(2, chip, Types.VARCHAR);
+            cs.setObject(3, idMedicina, Types.INTEGER);
+            cs.setObject(4, idTreatment, Types.INTEGER);
+            cs.setObject(5, idDisease, Types.INTEGER);
+
+            if (fechaInicio == null) {
+                cs.setNull(6, Types.DATE);
+            } else {
+                cs.setDate(6, Date.valueOf(fechaInicio));
+            }
+
+            if (fechaFin == null) {
+                cs.setNull(7, Types.DATE);
+            } else {
+                cs.setDate(7, Date.valueOf(fechaFin));
+            }
+
+            cs.registerOutParameter(8, Types.REF_CURSOR);
+            cs.registerOutParameter(9, Types.NUMERIC);
+
+            cs.execute();
+
+            total = cs.getInt(9);
+
+            try (ResultSet rs = (ResultSet) cs.getObject(8)) {
+                ResultSetMetaData meta = rs.getMetaData();
+                int numCols = meta.getColumnCount();
+
+                for (int i = 1; i <= numCols; i++) {
+                    columnas.add(meta.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    ObservableList<String> fila = FXCollections.observableArrayList();
+                    for (int i = 1; i <= numCols; i++) {
+                        Object val = rs.getObject(i);
+                        fila.add(val != null ? val.toString() : "");
+                    }
+                    filas.add(fila);
+                }
+            }
+        }
+        return new ResultadoConsulta(columnas, filas, total);
+    }
+
+
+
+
     public ResultadoConsulta consultarMascotas(
             String idTipo,
             String idRaza,

@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -10,16 +11,16 @@
 
 <AnchorPane prefHeight="609.0" prefWidth="915.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.SaludController">
    <children>
-      <TextField fx:id="nombre" layoutX="14.0" layoutY="60.0" />
-      <TextField fx:id="chip" layoutX="186.0" layoutY="60.0" />
-      <ComboBox fx:id="buscMedicina" layoutX="362.0" layoutY="60.0" prefWidth="150.0" />
-      <ComboBox fx:id="buscTratamiento" layoutX="539.0" layoutY="60.0" prefWidth="150.0" />
-      <ComboBox fx:id="enfermedad" layoutX="725.0" layoutY="60.0" prefWidth="150.0" />
-      <Text layoutX="14.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre" />
-      <Text layoutX="186.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chip" />
-      <Text layoutX="362.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Medicina" />
-      <Text layoutX="539.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tratamiento" />
-      <Text layoutX="725.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enfermedad" />
+      <TextField fx:id="nombre" layoutX="14.0" layoutY="47.0" />
+      <TextField fx:id="chip" layoutX="180.0" layoutY="47.0" />
+      <ComboBox fx:id="buscMedicina" layoutX="347.0" layoutY="47.0" prefWidth="150.0" />
+      <ComboBox fx:id="buscTratamiento" layoutX="526.0" layoutY="47.0" prefWidth="150.0" />
+      <ComboBox fx:id="enfermedad" layoutX="701.0" layoutY="47.0" prefWidth="150.0" />
+      <Text layoutX="14.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre" />
+      <Text layoutX="186.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chip" />
+      <Text layoutX="354.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Medicina" />
+      <Text layoutX="526.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tratamiento" />
+      <Text layoutX="701.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enfermedad" />
       <TableView fx:id="tablaMascotas" layoutX="16.0" layoutY="123.0" prefHeight="234.0" prefWidth="883.0">
         <columns>
           <TableColumn prefWidth="75.0" text="C1" />
@@ -35,6 +36,10 @@
       <Text layoutX="254.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dosis" />
       <TextField fx:id="dosis" layoutX="255.0" layoutY="458.0" />
       <Button layoutX="789.0" layoutY="548.0" mnemonicParsing="false" onAction="#switchVolver" text="Volver" />
-      <Button layoutX="16.0" layoutY="96.0" mnemonicParsing="false" text="Buscar" />
+      <Button layoutX="16.0" layoutY="96.0" mnemonicParsing="false" onAction="#buscar" text="Buscar" />
+      <DatePicker fx:id="startDate" layoutX="526.0" layoutY="96.0" />
+      <DatePicker fx:id="endDate" layoutX="716.0" layoutY="96.0" />
+      <Text layoutX="526.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enfermo desde" />
+      <Text layoutX="716.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enfermo hasta" />
    </children>
 </AnchorPane>
