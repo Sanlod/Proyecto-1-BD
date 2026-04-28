@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class MascotasDAO {
 
+
     public static class ResultadoConsulta {
         public final List<String> columnas;
         public final ObservableList<ObservableList<String>> filas;
@@ -25,6 +26,15 @@ public class MascotasDAO {
             this.filas = filas;
             this.total = total;
         }
+    }
+
+    private static MascotasDAO mascotasDAO = new MascotasDAO();
+
+    public static MascotasDAO getMascotasDAO() {
+        if(mascotasDAO == null){
+            return mascotasDAO =  new MascotasDAO();
+        }
+        else return mascotasDAO;
     }
 
     public static ObservableList<ObservableList<String>> listadosCatalogo(String nomSP)
@@ -430,7 +440,7 @@ public class MascotasDAO {
 
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall(
-                     "{ CALL SP_REGISTRAR_MEDICAMENTO_MASCOTA(?,?,?,?,?) }")) {
+                     "{ CALL SP_REGISTRAR_MED_MASCOTA(?,?,?,?,?) }")) {
 
             cs.setString(1, idPet);
             cs.setString(2, idMedication);

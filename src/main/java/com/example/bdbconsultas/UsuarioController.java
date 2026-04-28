@@ -42,6 +42,9 @@ public class UsuarioController {
         cambiarEscena("/com/example/bdbconsultas/Estadisticas.fxml" , event);
     }
 
+    public void switchSalud(ActionEvent event) throws IOException {
+        cambiarEscena("/com/example/bdbconsultas/Salud.fxml" , event);
+    }
 
 
     public void cambiarEscena(String fxml, ActionEvent event) throws IOException {
