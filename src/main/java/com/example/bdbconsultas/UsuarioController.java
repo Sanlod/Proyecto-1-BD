@@ -46,6 +46,17 @@ public class UsuarioController {
         cambiarEscena("/com/example/bdbconsultas/Salud.fxml" , event);
     }
 
+    public void switchBuscarMascotas(ActionEvent event) throws IOException {
+        cambiarEscena("/com/example/bdbconsultas/BuscarMascotas.fxml" , event);
+    }
+
+    public void switchAdoptar(ActionEvent event) throws IOException {
+        cambiarEscena("/com/example/bdbconsultas/Adoptar.fxml" , event);
+    }
+
+    public void switchBlackList(ActionEvent event) throws IOException {
+        cambiarEscena("/com/example/bdbconsultas/BlackList.fxml" , event);
+    }
 
     public void cambiarEscena(String fxml, ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource(fxml));

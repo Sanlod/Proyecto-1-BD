@@ -3,12 +3,19 @@ package com.example.bdbconsultas;
 import com.example.bdbconsultas.DAOs.PersonaDAO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class BlackListController implements Initializable {
@@ -83,5 +90,12 @@ public class BlackListController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.show();
+    }
+
+
+    public void switchVolver(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/bdbconsultas/Usuario.fxml")));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
     }
 }

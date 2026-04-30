@@ -12,7 +12,7 @@ public class EstadisticasDAO {
             LocalDate startDate, LocalDate endDate) throws SQLException {
 
         ObservableList<ObservableList<String>> results = FXCollections.observableArrayList();
-        String sql = "{ call SP_STATS_PETS_BY_TYPE_STATE(?, ?, ?) }";
+        String sql = "{ call SP_STATS_PETBYTYPESTATE(?, ?, ?) }";
 
         try (Connection conn = DBConnection.getConnection();
              CallableStatement cs = conn.prepareCall(sql)) {

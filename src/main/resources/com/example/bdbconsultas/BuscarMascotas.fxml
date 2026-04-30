@@ -178,7 +178,7 @@
 
                   <Button fx:id="btnVerDetalle" layoutX="838.0" layoutY="553.0" mnemonicParsing="false" onAction="#onVerDetalle" text="Ver detalle" />
 
-                  <Button fx:id="btnVolver" layoutX="861.0" layoutY="23.0" mnemonicParsing="false" onAction="#onVolver" text="Volver" />
+                  <Button fx:id="btnVolver" layoutX="861.0" layoutY="23.0" mnemonicParsing="false" onAction="#switchVolver" text="Volver" />
                </children>
             </AnchorPane>
 
