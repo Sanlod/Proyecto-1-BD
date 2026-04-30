@@ -33,6 +33,7 @@ public class SaludController  implements Initializable {
     public TextField dosis;
     public DatePicker startDate;
     public DatePicker endDate;
+    public Label lblTotal;
     private MascotasDAO mascotasDAO = MascotasDAO.getMascotasDAO();
 
     public void switchVolver(ActionEvent event) throws IOException {
@@ -165,6 +166,8 @@ public class SaludController  implements Initializable {
             tablaMascotas.getColumns().add(col);
         }
         tablaMascotas.setItems(mascotas.filas);
+
+        lblTotal.setText(String.valueOf(mascotas.total));
     }
 
     public void asignarMedicina() throws SQLException, ClassNotFoundException {

@@ -33,6 +33,8 @@ public class ReportesController implements Initializable {
     public TableView<ObservableList<String>> tablaMascota;
     public TableView<ObservableList<String>> tablaPersona;
     public MascotasDAO mascotasDAO = new MascotasDAO();
+    public Label lblTotalMascotas;
+    public Label lblTotalPersonas;
 
 
     public void switchVolver(ActionEvent event) throws IOException {
@@ -59,6 +61,7 @@ public class ReportesController implements Initializable {
                 tablaMascota.getColumns().add(col);
             }
             tablaMascota.setItems(mascotas.filas);
+            lblTotalMascotas.setText(String.valueOf(mascotas.total ));
 
             tablaPersona.getColumns().clear();
             for (int i = 0; i < personas.columnas.size(); i++) {
@@ -69,6 +72,7 @@ public class ReportesController implements Initializable {
                 tablaPersona.getColumns().add(col);
             }
             tablaPersona.setItems(personas.filas);
+            lblTotalPersonas.setText(String.valueOf(personas.total));
 
             enfermedadCbx.setItems(enfermedades);
             enfermedadCbx.setConverter(new StringConverter<ObservableList<String>>() {
@@ -153,10 +157,12 @@ public class ReportesController implements Initializable {
         MascotasDAO.ResultadoConsulta mascotas = mascotasDAO.consultarMascotas(null, null, null, null, null, null,
                 null, null, null, null, null, null, null);
         tablaMascota.setItems(mascotas.filas);
+        lblTotalMascotas.setText(String.valueOf(mascotas.total ));
     }
 
     private void actualizarPersonas() throws SQLException, ClassNotFoundException {
         PersonaDAO.ResultadoConsulta personas = PersonaDAO.consultarPersonas(null, null, null, null);
         tablaPersona.setItems(personas.filas);
+        lblTotalPersonas.setText(String.valueOf(personas.total));
     }
 }
