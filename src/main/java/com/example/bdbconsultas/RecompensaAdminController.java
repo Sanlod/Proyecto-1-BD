@@ -112,8 +112,8 @@ public class RecompensaAdminController implements Initializable {
 
         try {
             RecompensasDAO.pagarRescatista(idRescuer, idPet, "SYSTEM");
-            RecompensasDAO.marcarHallada(idPet, "SYSTEM");
-            mostrarInfo("Bounty pagado y mascota marcada como hallada.");
+
+            mostrarInfo("Bounty pagado.");
             cargarMascotasPerdidas();
             cmbRescatistas.setValue(null);
         } catch (Exception e) {

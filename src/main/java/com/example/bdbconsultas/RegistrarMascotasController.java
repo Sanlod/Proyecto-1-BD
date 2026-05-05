@@ -318,9 +318,17 @@ public class RegistrarMascotasController implements Initializable {
         if (txtIdNombre1.getText().isEmpty()) { mostrarError("El nombre es obligatorio"); return false; }
         if (cmbIdTipo1.getValue() == null) { mostrarError("El tipo de mascota es obligatorio"); return false; }
         if (cmbIdEstado1.getValue() == null) { mostrarError("El estado es obligatorio"); return false; }
-        if (dpFechaperdida.getValue() == null) { mostrarError("La fecha de pérdida es obligatoria"); return false; }
+        if (txtChip1.getText() != null && !txtChip1.getText().isEmpty()) {
+            try {
+                Long.parseLong(txtChip1.getText());
+            } catch (NumberFormatException e) {
+                mostrarError("El chip debe contener solo números");
+                return false;
+            }
+        }
         return true;
     }
+
 
     private File abrirFileChooser() {
         FileChooser chooser = new FileChooser();

@@ -136,22 +136,46 @@ public class AdopcionesDAO {
     }
 
 
-    public static boolean actualizarEstadoSolicitud(String idSolicitud, String nuevoEstado, String usuarioAdmin)
+    public static boolean actualizarEstadoSolicitud(
+            String idSolicitud, String idPet, String idPerson,
+            byte[] foto, byte[] fotoNueva, String notas,
+            String nuevoEstado, String usuario)
             throws SQLException, ClassNotFoundException {
 
         try (Connection conn = DBConnection.getConnection();
-             CallableStatement cs = conn.prepareCall("{ CALL SP_GESTIONAR_SOLICITUD(?,?,?,?) }")) {
-
+             CallableStatement cs = conn.prepareCall(
+                     "{ CALL SP_GESTIONAR_SOLICITUD(?,?,?,?,?,?,?,?,?) }")) {
             cs.setString(1, idSolicitud);
-            cs.setString(2, nuevoEstado);
-            cs.setString(3, usuarioAdmin);
-            cs.registerOutParameter(4, Types.NUMERIC);
-
+            cs.setString(2, idPet);
+            cs.setString(3, idPerson);
+            if (foto != null) cs.setBytes(4, foto);
+            else cs.setNull(4, Types.BLOB);
+            if (fotoNueva != null) cs.setBytes(5, fotoNueva);
+            else cs.setNull(5, Types.BLOB);
+            cs.setString(6, notas != null ? notas : "");
+            cs.setString(7, nuevoEstado);
+            cs.setString(8, usuario);
+            cs.registerOutParameter(9, Types.NUMERIC);
             cs.execute();
-            return cs.getInt(4) == 0;
+            return cs.getInt(9) == 0;
         }
     }
+    public static int registrarRequest(
+            String idMascota, String idPerson, String createdBy)
+            throws SQLException, ClassNotFoundException {
 
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall(
+                     "{ CALL SP_REGISTRAR_REQUEST(?,?,?,?,?) }")) {
+            cs.setString(1, idMascota);
+            cs.setString(2, idPerson);
+            cs.setString(3, createdBy);
+            cs.registerOutParameter(4, Types.NUMERIC);
+            cs.registerOutParameter(5, Types.NUMERIC);
+            cs.execute();
+            return cs.getInt(5) == 0 ? cs.getInt(4) : -1;
+        }
+    }
     public static int registrarAdopcion(
             String idMascota, String idAdoptante,
             String notas, byte[] foto, byte[] fotoNueva,
