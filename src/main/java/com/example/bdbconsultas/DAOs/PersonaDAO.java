@@ -213,4 +213,17 @@ public class PersonaDAO {
         return null;
     }
 
+    public static void hacerAdmin(String idPersona) throws SQLException, ClassNotFoundException {
+        // LLamar al prcedimiento que convierte en admin
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_MAKE_ADM(?) }")) {
+
+            cs.setInt(1, Integer.parseInt(idPersona.trim()));
+            cs.execute();
+        // Cae a error del sql que ya es admin
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
 }

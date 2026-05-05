@@ -220,6 +220,43 @@ public class PersonaController implements Initializable {
         tblDatos.getSelectionModel().clearSelection();
     }
 
+    @FXML
+    private void onMakeAdmin() {
+        ObservableList<String> seleccion = tblDatos.getSelectionModel().getSelectedItem();
+
+        if (seleccion == null) {
+            mostrarError("Seleccione una persona para hacer administradora");
+            return;
+        }
+
+        String idPersona = seleccion.get(0);
+        String nombrePersona = seleccion.get(1);
+
+        // Mensaje de confirmación
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar Privilegios");
+        confirm.setHeaderText(null);
+        confirm.setContentText("¿Está seguro de otorgar permisos de Administrador a " + nombrePersona + "?");
+
+        Optional<ButtonType> resultado = confirm.showAndWait();
+
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            try {
+                PersonaDAO.hacerAdmin(idPersona);
+
+                cargarDatos();
+                mostrarInfo("Ahora " + nombrePersona + " tiene permisos de Administrador.");
+
+            } catch (Exception e) {
+                if (e.getMessage() != null && e.getMessage().contains("ORA-20003")) {
+                    mostrarError("Esta persona ya cuenta con un rol de Administrador.");
+                } else {
+                    mostrarError("No se pudo completar la operación. Verifique si el usuario tiene una cuenta activa.");
+                }
+            }
+        }
+    }
+
     private void limpiarFormulario() {
         txtId.clear();
         txtPrimerNombre.clear();

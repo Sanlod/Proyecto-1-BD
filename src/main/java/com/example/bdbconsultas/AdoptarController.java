@@ -85,29 +85,23 @@ public class AdoptarController implements Initializable {
         int idxAdoptante = cmbAdoptante.getSelectionModel().getSelectedIndex();
 
         if (idxMascota < 0 || idxAdoptante < 0) {
-            mostrarError("Debe seleccionar mascota y adoptante.");
-            return;
+            mostrarError("Debe seleccionar mascota y adoptante."); return;
         }
         for (TextField campo : camposRespuesta) {
             if (campo.getText().trim().isEmpty()) {
-                mostrarError("Debe responder todas las preguntas.");
-                return;
+                mostrarError("Debe responder todas las preguntas."); return;
             }
         }
 
         String idMascota   = datosMascotas.get(idxMascota).get(0);
         String idAdoptante = datosAdoptantes.get(idxAdoptante).get(0);
-        String notas       = txtNotas.getText().trim();
         String createdBy   = "SYSTEM";
 
         try {
-            int idRequest = AdopcionesDAO.registrarAdopcion(
-                    idMascota, idAdoptante, notas,
-                    fotoBytes, fotoNuevaBytes, createdBy);
+            int idRequest = AdopcionesDAO.registrarRequest(idMascota, idAdoptante, createdBy);
 
             if (idRequest == -1) {
-                mostrarError("No se pudo registrar la adopción.");
-                return;
+                mostrarError("No se pudo registrar la solicitud."); return;
             }
 
             for (int i = 0; i < datosPreguntas.size(); i++) {
@@ -118,7 +112,7 @@ public class AdoptarController implements Initializable {
                         createdBy);
             }
 
-            mostrarInfo("Adopción registrada correctamente.");
+            mostrarInfo("Solicitud de adopción registrada. Pendiente de aprobación.");
             limpiar();
 
         } catch (Exception e) {

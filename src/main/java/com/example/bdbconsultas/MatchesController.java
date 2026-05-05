@@ -201,13 +201,27 @@ public class MatchesController implements Initializable {
         if (cmbNuevoEstado.getValue() == null) { mostrarError("Seleccione un estado."); return; }
 
         String idEstado = obtenerIdSeleccionado(cmbNuevoEstado, datosEstadosMatch);
-        if (idEstado == null) { mostrarError("Estado no encontrado."); return; }
+        String idMatch = seleccion.get(0);
+        String idLostPet = seleccion.get(1);
+        String idFoundPet = seleccion.get(2);
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "¿Cambiar estado del match?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "¿Confirmar match?");
         confirm.showAndWait().filter(r -> r == ButtonType.OK).ifPresent(r -> {
             try {
-                MatchesDAO.cambiarEstadoMatch(seleccion.get(0), idEstado, "SYSTEM");
-                mostrarInfo("Estado actualizado.");
+                MatchesDAO.cambiarEstadoMatch(idMatch, idEstado, "SYSTEM");
+
+                String nombreEstado = cmbNuevoEstado.getValue();
+                if (nombreEstado.equalsIgnoreCase("APROBADO")) {
+                    int resultado = MascotasDAO.marcarHallada(idLostPet, idFoundPet, "SYSTEM");
+                    if (resultado > 0) {
+                        mostrarInfo("Match aprobado y mascota marcada como hallada.");
+                    } else {
+                        mostrarError("Match aprobado pero no se encontró la mascota.");
+                    }
+                } else {
+                    mostrarInfo("Estado actualizado.");
+                }
+
                 onBuscar();
             } catch (Exception e) {
                 mostrarError("Error: " + e.getMessage());

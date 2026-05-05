@@ -30,20 +30,14 @@ public class AdopcionesController {
     @FXML private Button btnVolver;
 
     private ObservableList<ObservableList<String>> datosEstados;
-    private boolean esAdmin = false;
 
-    public void setEsAdmin(boolean esAdmin) {
-        this.esAdmin = esAdmin;
-        btnAprobar.setVisible(esAdmin);
-        btnRechazar.setVisible(esAdmin);
-    }
 
     @FXML
     public void initialize() {
         dpDesde.setValue(LocalDate.now().withDayOfYear(1));
         dpHasta.setValue(LocalDate.now());
-        btnAprobar.setVisible(false);
-        btnRechazar.setVisible(false);
+        btnAprobar.setVisible(true);
+        btnRechazar.setVisible(true);
         cargarCombos();
     }
 
@@ -144,8 +138,17 @@ public class AdopcionesController {
                 return;
             }
 
+            // idSolicitud=0, idPet=1 o viene del SP, idPerson=2
+            // La tabla ya muestra estos datos desde SP_CONSULTAR_SOLICITUDES
+            String idSolicitud = seleccion.get(0);
+            String idPet       = seleccion.get(1); // ajustar índice según SP
+            String idPerson    = seleccion.get(2); // ajustar índice según SP
+
             boolean ok = AdopcionesDAO.actualizarEstadoSolicitud(
-                    seleccion.get(0), idEstado, "SYSTEM");
+                    idSolicitud, idPet, idPerson,
+                    null, null, "",  // fotos y notas opcionales al aprobar
+                    idEstado, "SYSTEM");
+
             if (ok) {
                 mostrarAlerta("Éxito", "Estado actualizado.", Alert.AlertType.INFORMATION);
                 onBuscar();

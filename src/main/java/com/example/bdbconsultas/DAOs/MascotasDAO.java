@@ -742,4 +742,21 @@ public class MascotasDAO {
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_MASCOTASPERDIDAS");
     }
+
+    public static int marcarHallada(String idPet, String idFoundPet, String modifiedBy)
+            throws SQLException, ClassNotFoundException {
+
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_MARCAR_HALLADA(?,?,?,?) }")) {
+
+            cs.setString(1, idPet);
+            cs.setString(2, idFoundPet);
+            cs.setString(3, modifiedBy);
+            cs.registerOutParameter(4, Types.INTEGER);
+
+            cs.execute();
+
+            return cs.getInt(4);
+        }
+    }
 }
