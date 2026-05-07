@@ -721,6 +721,10 @@ public class MascotasDAO {
             throws SQLException, ClassNotFoundException {
         return listadosCatalogo("SP_LISTAR_MASCOTASPERDIDAS");
     }
+    public static ObservableList<ObservableList<String>> getMascotasEnAdopcion()
+            throws SQLException, ClassNotFoundException {
+        return listadosCatalogo("SP_LISTAR_MASC_EN_ADOP");
+    }
 
     public static int marcarHallada(String idPet, String idFoundPet, String modifiedBy)
             throws SQLException, ClassNotFoundException {

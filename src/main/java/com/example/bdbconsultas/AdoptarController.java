@@ -1,6 +1,8 @@
 package com.example.bdbconsultas;
 
 import com.example.bdbconsultas.DAOs.AdopcionesDAO;
+import com.example.bdbconsultas.DAOs.MascotasDAO;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,9 +23,10 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AdoptarController implements Initializable {
-
-    @FXML private ComboBox<String> cmbMascota;
-    @FXML private ComboBox<String> cmbAdoptante;
+    @FXML private TableView<ObservableList<String>> tblMascotas;
+    @FXML private TableColumn<ObservableList<String>, String> colPetId, colPetNombre;
+    @FXML private TableView<ObservableList<String>> tblAdoptantes;
+    @FXML private TableColumn<ObservableList<String>, String> colAdopId, colAdopNombre;
     @FXML private VBox vboxPreguntas;
     @FXML private Button btnRegistrar;
     @FXML private Button btnVolver;
@@ -43,22 +46,11 @@ public class AdoptarController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cargarCombos();
+        configurarTablas();
+        cargarDatosTablas();
         cargarPreguntas();
     }
 
-    private void cargarCombos() {
-        try {
-            datosMascotas = AdopcionesDAO.getMascotas();
-            datosAdoptantes = AdopcionesDAO.getAdoptantes();
-            for (ObservableList<String> fila : datosMascotas)
-                cmbMascota.getItems().add(fila.get(1));
-            for (ObservableList<String> fila : datosAdoptantes)
-                cmbAdoptante.getItems().add(fila.get(1));
-        } catch (Exception e) {
-            mostrarError("Error al cargar datos: " + e.getMessage());
-        }
-    }
 
     private void cargarPreguntas() {
         try {
@@ -77,24 +69,44 @@ public class AdoptarController implements Initializable {
             mostrarError("Error al cargar preguntas: " + e.getMessage());
         }
     }
+    private void configurarTablas() {
+        colPetId.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().get(0)));
+        colPetNombre.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().get(1)));
 
+        colAdopId.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().get(0)));
+        colAdopNombre.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().get(1)));
+    }
+
+    private void cargarDatosTablas() {
+        try {
+            datosMascotas = MascotasDAO.getMascotasEnAdopcion();
+            tblMascotas.setItems(datosMascotas);
+
+            datosAdoptantes = AdopcionesDAO.getAdoptantes();
+            tblAdoptantes.setItems(datosAdoptantes);
+        } catch (Exception e) {
+            mostrarError("Error al cargar tablas: " + e.getMessage());
+        }
+    }
     @FXML
     private void onRegistrar() {
-        int idxMascota   = cmbMascota.getSelectionModel().getSelectedIndex();
-        int idxAdoptante = cmbAdoptante.getSelectionModel().getSelectedIndex();
+        ObservableList<String> mascotaSeleccionada = tblMascotas.getSelectionModel().getSelectedItem();
+        ObservableList<String> adoptanteSeleccionado = tblAdoptantes.getSelectionModel().getSelectedItem();
 
-        if (idxMascota < 0 || idxAdoptante < 0) {
-            mostrarError("Debe seleccionar mascota y adoptante."); return;
+        if (mascotaSeleccionada == null || adoptanteSeleccionado == null) {
+            mostrarError("Debe seleccionar una mascota y un adoptante de las tablas.");
+            return;
         }
+
         for (TextField campo : camposRespuesta) {
             if (campo.getText().trim().isEmpty()) {
-                mostrarError("Debe responder todas las preguntas."); return;
+                mostrarError("Debe responder todas las preguntas.");
+                return;
             }
         }
-
-        String idMascota   = datosMascotas.get(idxMascota).get(0);
-        String idAdoptante = datosAdoptantes.get(idxAdoptante).get(0);
-        String createdBy   = "SYSTEM";
+        String idMascota = mascotaSeleccionada.get(0);
+        String idAdoptante = adoptanteSeleccionado.get(0);
+        String createdBy = "SYSTEM";
 
         try {
             int idRequest = AdopcionesDAO.registrarRequest(idMascota, idAdoptante, createdBy);
@@ -120,8 +132,8 @@ public class AdoptarController implements Initializable {
     }
 
     private void limpiar() {
-        cmbMascota.getSelectionModel().clearSelection();
-        cmbAdoptante.getSelectionModel().clearSelection();
+        tblMascotas.getSelectionModel().clearSelection();
+        tblAdoptantes.getSelectionModel().clearSelection();
         camposRespuesta.forEach(TextField::clear);
         fotoBytes = null;
         fotoNuevaBytes = null;

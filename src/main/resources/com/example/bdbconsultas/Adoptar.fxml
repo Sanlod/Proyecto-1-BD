@@ -1,42 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="650.0" prefWidth="875.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.AdoptarController">
    <children>
+      <Button fx:id="btnVolver" layoutX="800.0" layoutY="14.0" onAction="#switchVolver" prefWidth="60.0" text="Volver" />
 
-      <Button fx:id="btnVolver" layoutX="815.0" layoutY="10.0" onAction="#switchVolver" text="Volver" />
+      <Label layoutX="30.0" layoutY="20.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Registro de Solicitud de Adopción" />
 
-      <Text layoutX="30.0" layoutY="89.0" text="Mascota:" />
-      <ComboBox fx:id="cmbMascota" layoutX="100.0" layoutY="72.0" prefWidth="200.0" />
+      <HBox layoutX="30.0" layoutY="60.0" spacing="20.0">
+         <children>
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Seleccione Mascota (En Adopción):" />
+                  <TableView fx:id="tblMascotas" prefHeight="150.0" prefWidth="395.0">
+                     <columns>
+                        <TableColumn fx:id="colPetId" prefWidth="75.0" text="ID" />
+                        <TableColumn fx:id="colPetNombre" prefWidth="318.0" text="Nombre Mascota" />
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
 
-      <Text layoutX="320.0" layoutY="89.0" text="Adoptante:" />
-      <ComboBox fx:id="cmbAdoptante" layoutX="390.0" layoutY="72.0" prefWidth="200.0" />
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Seleccione Adoptante:" />
+                  <TableView fx:id="tblAdoptantes" prefHeight="150.0" prefWidth="395.0">
+                     <columns>
+                        <TableColumn fx:id="colAdopId" prefWidth="75.0" text="ID" />
+                        <TableColumn fx:id="colAdopNombre" prefWidth="318.0" text="Nombre Completo" />
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
 
-      <!-- Fotos req. f -->
-      <Text layoutX="30.0" layoutY="168.0" text="Foto con mascota:" />
-      <Button fx:id="btnFoto" layoutX="150.0" layoutY="152.0" onAction="#onSeleccionarFoto" text="Seleccionar" />
-      <Label fx:id="lblFoto" layoutX="260.0" layoutY="157.0" text="Sin foto" />
+      <VBox layoutX="30.0" layoutY="235.0" spacing="10.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <children>
+                  <Label prefWidth="120.0" text="Foto con mascota:" />
+                  <Button fx:id="btnFoto" onAction="#onSeleccionarFoto" text="Seleccionar" />
+                  <Label fx:id="lblFoto" text="Sin foto" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <children>
+                  <Label prefWidth="120.0" text="Foto nueva vida:" />
+                  <Button fx:id="btnFotoNueva" onAction="#onSeleccionarFotoNueva" text="Seleccionar" />
+                  <Label fx:id="lblFotoNueva" text="Sin foto" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
 
-      <Text layoutX="30.0" layoutY="198.0" text="Foto nueva vida:" />
-      <Button fx:id="btnFotoNueva" layoutX="150.0" layoutY="182.0" onAction="#onSeleccionarFotoNueva" text="Seleccionar" />
-      <Label fx:id="lblFotoNueva" layoutX="260.0" layoutY="187.0" text="Sin foto" />
-
-      <!-- Formulario parametrizable req. o -->
-      <Text layoutX="30.0" layoutY="222.0" text="Formulario de solicitud:" />
-      <ScrollPane fitToWidth="true" layoutX="30.0" layoutY="228.0" prefHeight="340.0" prefWidth="840.0">
+      <Label layoutX="30.0" layoutY="315.0" text="Formulario de solicitud (Responda todas las preguntas):" />
+      <ScrollPane fitToWidth="true" layoutX="30.0" layoutY="335.0" prefHeight="240.0" prefWidth="815.0">
          <content>
             <VBox fx:id="vboxPreguntas" spacing="15.0" style="-fx-padding: 10;" />
          </content>
       </ScrollPane>
 
-      <Button fx:id="btnRegistrar" layoutX="740.0" layoutY="585.0" onAction="#onRegistrar" text="Registrar solicitud" />
-
+      <Button fx:id="btnRegistrar" layoutX="715.0" layoutY="590.0" onAction="#onRegistrar" prefHeight="30.0" prefWidth="130.0" style="-fx-base: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Registrar solicitud" />
    </children>
 </AnchorPane>

@@ -20,12 +20,17 @@
             </columns>
         </TableView>
 
-        <Button fx:id="btnEditar" layoutX="23.0" layoutY="107.0" mnemonicParsing="false" onAction="#onEditar" prefWidth="160.0" text="Editar" />
-        <Button fx:id="btnEliminar" layoutX="23.0" layoutY="147.0" mnemonicParsing="false" onAction="#onEliminar" prefWidth="160.0" text="Eliminar" />
-        <Button fx:id="btnGuardar" layoutX="23.0" layoutY="187.0" mnemonicParsing="false" onAction="#onGuardar" prefWidth="160.0" text="Guardar" />
-        <Button fx:id="btnCancelar" layoutX="23.0" layoutY="227.0" mnemonicParsing="false" onAction="#onCancelar" prefWidth="160.0" text="Cancelar" />
-        <Button fx:id="btnReportarListaNegra" layoutX="23.0" layoutY="277.0" mnemonicParsing="false" onAction="#onReportarListaNegra" prefWidth="160.0" text="Reportar lista negra" />
-        <Button fx:id="btnMakeAdmin" layoutX="23.0" layoutY="317.0" mnemonicParsing="false" onAction="#onMakeAdmin" prefWidth="160.0" text="Convertir a Administrador" />
+        <Button fx:id="btnEditar" layoutX="23.0" layoutY="52.0" mnemonicParsing="false" onAction="#onEditar" prefWidth="160.0" text="Editar" />
+        <Button fx:id="btnEliminar" layoutX="23.0" layoutY="92.0" mnemonicParsing="false" onAction="#onEliminar" prefWidth="160.0" text="Eliminar" />
+        <Button fx:id="btnGuardar" layoutX="23.0" layoutY="132.0" mnemonicParsing="false" onAction="#onGuardar" prefWidth="160.0" text="Guardar" />
+        <Button fx:id="btnCancelar" layoutX="23.0" layoutY="172.0" mnemonicParsing="false" onAction="#onCancelar" prefWidth="160.0" text="Cancelar" />
+
+        <Label layoutX="23.0" layoutY="215.0" style="-fx-font-weight: bold;" text="Roles y Estado:" />
+
+        <Button fx:id="btnReportarListaNegra" layoutX="23.0" layoutY="237.0" mnemonicParsing="false" onAction="#onReportarListaNegra" prefWidth="160.0" text="Reportar lista negra" />
+        <Button fx:id="btnMakeAdmin" layoutX="23.0" layoutY="277.0" mnemonicParsing="false" onAction="#onMakeAdmin" prefWidth="160.0" text="Convertir a Administrador" />
+
+        <Button fx:id="btnMakeRescuer" layoutX="23.0" layoutY="317.0" mnemonicParsing="false" onAction="#onMakeRescuer" prefWidth="160.0" style="-fx-base: #e1f5fe;" text="Convertir a Rescatista" />
 
         <Button fx:id="btnVolver" layoutX="722.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchVolver" prefHeight="17.0" prefWidth="57.0" text="Volver" />
 

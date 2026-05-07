@@ -241,6 +241,43 @@ public class PersonaController implements Initializable {
         }
     }
 
+    @FXML
+    private void onMakeRescuer() {
+        ObservableList<String> seleccion = tblDatos.getSelectionModel().getSelectedItem();
+
+        if (seleccion == null) {
+            mostrarError("Seleccione una persona para hacer rescatista");
+            return;
+        }
+
+        String idPersona = seleccion.get(0);
+        String nombrePersona = seleccion.get(1);
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar Rol");
+        confirm.setHeaderText(null);
+        confirm.setContentText("¿Está seguro de convertir en rescatista a " + nombrePersona + "?");
+
+        Optional<ButtonType> resultadoBtn = confirm.showAndWait();
+
+        if (resultadoBtn.isPresent() && resultadoBtn.get() == ButtonType.OK) {
+            try {
+
+                String respuesta = PersonaDAO.makeRescatista(idPersona, "SYSTEM");
+
+                if ("EXITO".equalsIgnoreCase(respuesta)) {
+                    mostrarInfo(nombrePersona + " ahora tiene el rol de Rescatista.");
+                    cargarDatos();
+                } else {
+                    mostrarError(respuesta);
+                }
+
+            } catch (Exception e) {
+                mostrarError("No se pudo completar la operación: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
     private void limpiarFormulario() {
         txtId.clear();
         txtPrimerNombre.clear();

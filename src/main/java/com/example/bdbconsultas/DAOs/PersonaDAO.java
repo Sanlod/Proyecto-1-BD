@@ -85,6 +85,23 @@ public class PersonaDAO {
         }
     }
 
+    public static String makeRescatista(String idPersona, String createdBy)
+            throws SQLException, ClassNotFoundException {
+
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall("{ CALL SP_MAKE_RESCATISTA(?,?,?) }")) {
+
+            cs.setString(1, idPersona);
+            cs.setString(2, createdBy);
+
+            cs.registerOutParameter(3, java.sql.Types.VARCHAR);
+
+            cs.execute();
+
+            return cs.getString(3);
+        }
+    }
+
     public static PersonaDAO.ResultadoConsulta consultarPersonas(
             String nombre,
             String primerApellido,
