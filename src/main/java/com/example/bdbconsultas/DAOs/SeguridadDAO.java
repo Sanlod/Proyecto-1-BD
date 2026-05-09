@@ -15,28 +15,49 @@ public class SeguridadDAO {
     // Validar el login
     public IntPair validarLogin(String username, String password) throws SQLException, ClassNotFoundException {
 
-        //Hashear entrada
-        String passwordHashed = hashPassword(password);
+        // Primero obtener el hash guardado en la BD
+        String hashGuardado = obtenerHashPorUsername(username);
+        System.out.println("Hash guardado: " + hashGuardado);
 
+        if (hashGuardado == null) {
+            return new IntPair(-1, 0); // Usuario no existe
+        }
+
+        String[] partes = hashGuardado.split(":");
+        String saltExtraido = partes[0];
+        String hashOriginal = partes[1];
+
+        String hashNuevo = Argon2Factory.create()
+                .setIterations(3)
+                .setMemory(16)
+                .setParallelism(2)
+                .hash(password.toCharArray(), saltExtraido);
+
+        boolean coincide = hashNuevo.equals(hashOriginal);
+
+        if (!coincide) {
+            return new IntPair(-1, 0); // Contraseña incorrecta
+        }
+
+        System.out.println("Hash nuevo:    " + hashNuevo);
+        System.out.println("Hash original: " + hashOriginal);
+        System.out.println("Coincide: " + coincide);
+        // Si coincide, llamar al SP solo para obtener el tipo de usuario e id
         try (Connection conn = DBConnection.getConnection()) {
             try (CallableStatement cs = conn.prepareCall("{ CALL SP_AUTENTICAR_USUARIO(?,?,?,?,?) }")) {
-                // Entradas
                 cs.setString(1, username);
-                cs.setString(2, passwordHashed);
-
-                // Salidas
-                cs.registerOutParameter(3, Types.NUMERIC); // p_userType
-                cs.registerOutParameter(4, Types.NUMERIC); // p_status
+                cs.setString(2, hashGuardado); // Mandamos el hash guardado para que el SP lo encuentre
+                cs.registerOutParameter(3, Types.NUMERIC);
+                cs.registerOutParameter(4, Types.NUMERIC);
                 cs.registerOutParameter(5, Types.NUMERIC);
-
 
                 cs.execute();
 
                 int status = cs.getInt(4);
                 if (status == 1) {
-                    return new IntPair (cs.getInt(3), cs.getInt(5)); // Retorna el id de tipo de usuario
+                    return new IntPair(cs.getInt(3), cs.getInt(5));
                 } else {
-                    return new IntPair(-1,0); // Falló el login
+                    return new IntPair(-1, 0);
                 }
             }
         }
@@ -45,6 +66,7 @@ public class SeguridadDAO {
     // Registrar Usuario - Persona
     public int registrarUsuario(String firstName, String secondName, String firstSurname, String secondSurname, String username, String email, String password) throws SQLException, ClassNotFoundException {
         String passwordHashed = hashPassword(password);
+        System.out.println("Hash a guardar: " + passwordHashed);
 
         try (Connection conn = DBConnection.getConnection()) {
             try (CallableStatement cs = conn.prepareCall("{ CALL SP_REGISTRAR_USUARIO_COMPLETO(?,?,?,?,?,?,?,?,?) }")) {
@@ -66,17 +88,29 @@ public class SeguridadDAO {
     }
 
     private String hashPassword(String password) {
-        String salt = generateRandomSalt(); // Crea un String de salt
-        return Argon2Factory.create()
-                .setIterations(3) //Cantidad de veces que se ejecuta
-                .setMemory(16) //Uso de memoria en RAM 16 = 65MB aprox
-                .setParallelism(2)  //Cantidad de hilos que usa simultaneamente
+        String salt = generateRandomSalt();
+        String hash = Argon2Factory.create()
+                .setIterations(3)
+                .setMemory(16)
+                .setParallelism(2)
                 .hash(password.toCharArray(), salt);
+        return salt + ":" + hash; // Guardamos salt:hash
     }
 
     private String generateRandomSalt() {
         byte[] saltBytes = new byte[16];          // Crea un arreglo de 16 bytes vacío
         new SecureRandom().nextBytes(saltBytes);  // Lo llena con bytes aleatorios criptográficamente seguros
         return Base64.getEncoder().encodeToString(saltBytes); // Lo convierte a texto legible
+    }
+
+    private String obtenerHashPorUsername(String username) throws SQLException, ClassNotFoundException {
+        try (Connection conn = DBConnection.getConnection()) {
+            try (CallableStatement cs = conn.prepareCall("{ CALL SP_Get_Pass_User(?,?) }")) {
+                cs.setString(1, username);
+                cs.registerOutParameter(2, Types.VARCHAR);
+                cs.execute();
+                return cs.getString(2);
+            }
+        }
     }
 }
