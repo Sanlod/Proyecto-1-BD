@@ -2,6 +2,7 @@ package com.example.bdbconsultas;
 
 import com.example.bdbconsultas.DAOs.MascotasDAO;
 import com.example.bdbconsultas.DAOs.PersonaDAO;
+import com.example.bdbconsultas.DAOs.RecompensasDAO;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,6 +36,8 @@ public class ReportesController implements Initializable {
     public MascotasDAO mascotasDAO = new MascotasDAO();
     public Label lblTotalMascotas;
     public Label lblTotalPersonas;
+    public ComboBox<ObservableList<String>> divisas;
+    public Spinner<Integer> monto;
 
 
     public void switchVolver(ActionEvent event) throws IOException {
@@ -46,8 +49,7 @@ public class ReportesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            MascotasDAO.ResultadoConsulta mascotas = mascotasDAO.consultarMascotas(null, null, null, null, null, null,
-                    null, null, null, null, null, null, null);
+            MascotasDAO.ResultadoConsulta mascotas = mascotasDAO.consultarMascotaOwner(LogInController.loggedUserId);
             PersonaDAO.ResultadoConsulta personas = PersonaDAO.consultarPersonas(null, null, null, null);
             ObservableList<ObservableList<String>> enfermedades = MascotasDAO.getEnfermedades();
 
@@ -86,10 +88,33 @@ public class ReportesController implements Initializable {
                 }
             });
 
+            ObservableList<ObservableList<String>> monedas = MascotasDAO.getMonedas();
+            divisas.setItems(monedas);
+            divisas.setConverter(new StringConverter<ObservableList<String>>() {
+                @Override
+                public String toString(ObservableList<String> fila) {
+                    return fila != null ? fila.get(1) : "";
+                }
+
+                @Override
+                public ObservableList<String> fromString(String s) {
+                    return null;
+                }
+            });
 
             SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
                     new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, 1);
             calificacion.setValueFactory(valueFactory);
+
+
+            SpinnerValueFactory<Integer> valorFactory =
+                    new SpinnerValueFactory.IntegerSpinnerValueFactory(
+                            0,
+                            Integer.MAX_VALUE,
+                            0
+                    );
+
+            monto.setValueFactory(valorFactory);
 
         }
         catch (Exception e) {
@@ -140,9 +165,16 @@ public class ReportesController implements Initializable {
         alert.showAndWait();
     }
 
+    public void mostrarInfo(String mensaje){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Exito");
+        alert.setHeaderText("Proceso buenardo");
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
     private void actualizarMascotas() throws SQLException, ClassNotFoundException {
-        MascotasDAO.ResultadoConsulta mascotas = mascotasDAO.consultarMascotas(null, null, null, null, null, null,
-                null, null, null, null, null, null, null);
+        MascotasDAO.ResultadoConsulta mascotas = mascotasDAO.consultarMascotaOwner(LogInController.loggedUserId);
         tablaMascota.setItems(mascotas.filas);
         lblTotalMascotas.setText(String.valueOf(mascotas.total ));
     }
@@ -151,5 +183,26 @@ public class ReportesController implements Initializable {
         PersonaDAO.ResultadoConsulta personas = PersonaDAO.consultarPersonas(null, null, null, null);
         tablaPersona.setItems(personas.filas);
         lblTotalPersonas.setText(String.valueOf(personas.total));
+    }
+
+    public void reportarPerdida() throws SQLException, ClassNotFoundException {
+        if(tablaMascota.getSelectionModel().getSelectedItem()==null){
+            mostrarAlerta("Por favor seleccione una mascota");
+            return;
+        }
+
+        if(divisas.getSelectionModel().getSelectedItem()==null || monto.getValue() == null ){
+            mostrarAlerta("Por favor seleccione una divisa y un monto");
+            return;
+        }
+
+        MascotasDAO.registrarEstadoMascota(tablaMascota.getSelectionModel().getSelectedItem().get(0),"1",LocalDate.now(),LogInController.loggedUser);
+
+        RecompensasDAO.registrarRecompensa(String.valueOf(monto.getValue()),tablaMascota.getSelectionModel().getSelectedItem().get(0),divisas.getSelectionModel().getSelectedItem().get(0));
+
+        actualizarMascotas();
+        mostrarInfo("Mascota reportada como perdida exitosamente");
+
+
     }
 }

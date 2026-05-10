@@ -163,6 +163,7 @@ public class BuscarMascotasController implements Initializable {
 
     private void cargarCombos() {
         try {
+            datosEstadosActuales = MascotasDAO.getEstados();
             cmbEstado.setItems(datosEstadosActuales.stream()
                     .filter(row -> {
                         String nombreEstado = row.get(1); 
