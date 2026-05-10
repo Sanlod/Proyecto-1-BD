@@ -271,7 +271,7 @@ public class RegistrarMascotasController implements Initializable {
             LocalDate foundDate = LocalDate.now();
             LocalDate birthDate = birthDatePicker.getValue();
 
-            if (birthDate.isAfter(LocalDate.now()) || foundDate.isAfter(LocalDate.now()) || lossDate.isAfter(LocalDate.now())) {
+            if (birthDate.isAfter(LocalDate.now()) || (lossDate != null && lossDate.isAfter(LocalDate.now()))) {
                 mostrarError("Por favor elija una fecha válida");
                 return;
             }

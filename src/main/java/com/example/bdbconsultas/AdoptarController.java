@@ -89,8 +89,8 @@ public class AdoptarController implements Initializable {
         ObservableList<String> mascotaSeleccionada = tblMascotas.getSelectionModel().getSelectedItem();
         ObservableList<String> adoptanteSeleccionado = tblAdoptantes.getSelectionModel().getSelectedItem();
 
-        if (mascotaSeleccionada == null || adoptanteSeleccionado == null) {
-            mostrarError("Debe seleccionar una mascota y un adoptante de las tablas.");
+        if (mascotaSeleccionada == null) {
+            mostrarError("Debe seleccionar una mascota de la tabla.");
             return;
         }
 

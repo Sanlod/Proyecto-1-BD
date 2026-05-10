@@ -71,11 +71,11 @@
                   </HBox>
                   <TableView fx:id="tablaDonaciones" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5; -fx-border-color: #ecf0f1;">
                      <columns>
-                        <TableColumn fx:id="colC1" prefWidth="400.0" text="Detalle de Donación" />
-                        <TableColumn fx:id="colC2" prefWidth="400.0" text="Monto / Fecha" />
+                        <TableColumn fx:id="colC1" prefWidth="350.0" minWidth="200.0" text="Detalle de Donación" />
+                        <TableColumn fx:id="colC2" prefWidth="250.0" minWidth="150.0" text="Monto / Fecha" />
                      </columns>
                      <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
                </children>

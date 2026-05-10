@@ -8,7 +8,6 @@
    <children>
       <VBox spacing="15.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
          <children>
-
             <HBox alignment="CENTER_LEFT" prefHeight="60.0" style="-fx-background-color: linear-gradient(to right, #16a085, #2ecc71); -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);">
                <children>
                   <VBox>
@@ -76,17 +75,18 @@
                      <Label text="Total:" style="-fx-text-fill: #7f8c8d;" />
                      <Label fx:id="lblTotal" style="-fx-font-weight: bold;" text="0" />
                   </HBox>
-                  <TableView fx:id="tablaMascotas" prefHeight="200.0" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="tablaMascotas" VBox.vgrow="ALWAYS" prefHeight="300.0">
                      <columns>
-                        <TableColumn prefWidth="50.0" text="ID" />
-                        <TableColumn prefWidth="120.0" text="NOMBRE" />
-                        <TableColumn prefWidth="100.0" text="CHIP" />
-                        <TableColumn prefWidth="180.0" text="MEDICINAS" />
-                        <TableColumn prefWidth="180.0" text="TRATAMIENTOS" />
-                        <TableColumn prefWidth="200.0" text="ENFERMEDADES" />
+                        <TableColumn prefWidth="60.0" minWidth="50.0" text="ID" />
+                        <TableColumn prefWidth="150.0" minWidth="100.0" text="NOMBRE" />
+                        <TableColumn prefWidth="120.0" minWidth="100.0" text="CHIP" />
+                        <TableColumn prefWidth="200.0" minWidth="150.0" text="MEDICINAS" />
+                        <TableColumn prefWidth="200.0" minWidth="150.0" text="TRATAMIENTOS" />
+                        <TableColumn prefWidth="200.0" minWidth="150.0" text="ENFERMEDADES" />
+                        <TableColumn prefWidth="200.0" minWidth="150.0" text="VETERINARIO"/>
                      </columns>
                      <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
                </children>
