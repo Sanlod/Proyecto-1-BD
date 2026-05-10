@@ -782,4 +782,41 @@ public class MascotasDAO {
     }
 
 
+    public ResultadoConsulta consultarMascotaOwner(
+            Integer idUser
+    ) throws SQLException, ClassNotFoundException {
+        List<String> columnas = new ArrayList<>();
+        ObservableList<ObservableList<String>> filas = FXCollections.observableArrayList();
+        int total = 0;
+
+        try (Connection conn = DBConnection.getConnection();
+             CallableStatement cs = conn.prepareCall(
+                     "{ CALL SP_CONSULTAR_MASCOTAS_USUARIO(?,?) }")) {
+
+            cs.setObject(1, idUser, Types.INTEGER);
+            cs.registerOutParameter(2, Types.REF_CURSOR);
+
+            cs.execute();
+
+            try (ResultSet rs = (ResultSet) cs.getObject(2)) {
+                ResultSetMetaData meta = rs.getMetaData();
+                int numCols = meta.getColumnCount();
+
+                for (int i = 1; i <= numCols; i++) {
+                    columnas.add(meta.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    ObservableList<String> fila = FXCollections.observableArrayList();
+                    for (int i = 1; i <= numCols; i++) {
+                        Object val = rs.getObject(i);
+                        fila.add(val != null ? val.toString() : "");
+                    }
+                    filas.add(fila);
+                }
+            }
+        }
+        return new ResultadoConsulta(columnas, filas, total);
+    }
+
 }

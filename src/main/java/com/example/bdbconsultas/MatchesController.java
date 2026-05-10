@@ -221,7 +221,7 @@ public class MatchesController implements Initializable {
             String idEstadoNuevo = obtenerIdSeleccionado(cmbNuevoEstado, datosEstadosMatch);
             MatchesDAO.cambiarEstadoMatch(idMatch, idEstadoNuevo, LogInController.loggedUser);
 
-            if (cmbNuevoEstado.getValue().equalsIgnoreCase("APROBADO")) {
+            if (cmbNuevoEstado.getValue().equalsIgnoreCase("Confirmado")) {
                 MascotasDAO.marcarHallada(idLostPet, idFoundPet, LogInController.loggedUser);
                 mostrarInfo("Mascotas actualizadas a HALLADA y PROCESADA.");
             }
