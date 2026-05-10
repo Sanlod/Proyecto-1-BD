@@ -361,7 +361,7 @@ public class AdopcionesController {
             mostrarAlerta("Atención", "Seleccione una solicitud de la tabla.", Alert.AlertType.WARNING);
             return false;
         }
-
+        String idPetActual = seleccion.get(1);
         String estadoActual = seleccion.get(6);
 
         if ("APROBADA".equalsIgnoreCase(estadoActual)) {
@@ -373,7 +373,16 @@ public class AdopcionesController {
             mostrarAlerta("Error", "Esta solicitud ya ha sido rechazada anteriormente.", Alert.AlertType.ERROR);
             return false;
         }
+        boolean mascotaYaAdoptada = tablaSolicitudes.getItems().stream()
+                .anyMatch(fila -> fila.get(1).equals(idPetActual) &&
+                        "APROBADA".equalsIgnoreCase(fila.get(6)));
 
+        if (mascotaYaAdoptada) {
+            mostrarAlerta("Mascota no disponible",
+                    "No se puede aprobar: Esta mascota ya fue adoptada mediante otra solicitud.",
+                    Alert.AlertType.ERROR);
+            return false;
+        }
         return true;
     }
 
