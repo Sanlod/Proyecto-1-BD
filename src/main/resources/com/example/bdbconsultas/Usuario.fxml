@@ -4,22 +4,37 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 
 <AnchorPane prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #f0f4f8;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.UsuarioController">
     <children>
         <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
 
-                <HBox alignment="CENTER_LEFT" prefHeight="80.0" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                <HBox alignment="CENTER_LEFT" prefHeight="90.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 15 25 15 25; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
                     <children>
+                        <ImageView fitHeight="60.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@logo.png" />
+                            </image>
+                        </ImageView>
+
+                        <Separator orientation="VERTICAL" prefHeight="40.0">
+                            <HBox.margin>
+                                <Insets bottom="5.0" top="5.0" />
+                            </HBox.margin>
+                        </Separator>
+
                         <VBox alignment="CENTER_LEFT">
                             <children>
                                 <Label style="-fx-text-fill: #2c3e50; -fx-font-size: 24px; -fx-font-weight: bold;" text="Portal del Adoptante" />
                                 <Label style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" text="Bienvenido, gestiona tus solicitudes y consultas aquí" />
                             </children>
                         </VBox>
+
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button onAction="#switchVolver" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="Cerrar Sesión" />
+
+                        <Button onAction="#switchVolver" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 15;" text="Cerrar Sesión" />
                     </children>
                 </HBox>
 

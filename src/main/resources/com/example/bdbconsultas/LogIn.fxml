@@ -4,35 +4,46 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: linear-gradient(to bottom right, #16a085, #2c3e50);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.LogInController">
+<AnchorPane prefHeight="550.0" prefWidth="750.0" style="-fx-background-color: linear-gradient(to bottom right, #16a085, #2c3e50);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bdbconsultas.LogInController">
     <children>
-        <VBox alignment="CENTER" layoutX="175.0" layoutY="60.0" prefHeight="380.0" prefWidth="350.0" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 20, 0, 0, 10);">
+        <VBox alignment="CENTER" layoutX="200.0" layoutY="35.0" prefWidth="350.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 20, 0, 0, 10);">
             <padding>
-                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+                <Insets bottom="30.0" left="40.0" right="40.0" top="25.0" />
             </padding>
             <children>
 
-                <VBox alignment="CENTER" spacing="5.0">
+                <ImageView fitHeight="100.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@logo.png" />
+                    </image>
+                </ImageView>
+
+                <VBox alignment="CENTER" spacing="2.0">
                     <children>
-                        <Label style="-fx-text-fill: #16a085; -fx-font-size: 28px; -fx-font-weight: bold;" text="¡Bienvenido!" />
-                        <Label style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;" text="Gestión de Mascotas" />
+                        <Label style="-fx-text-fill: #16a085; -fx-font-size: 26px; -fx-font-weight: bold;" text="¡Bienvenido!" />
+                        <Label style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" text="Gestión de Mascotas Emerald" />
                     </children>
                 </VBox>
 
-                <Region prefHeight="10.0" />
+                <Separator prefWidth="200.0">
+                    <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                    </VBox.margin>
+                </Separator>
 
                 <VBox spacing="5.0">
                     <children>
-                        <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e;" text="Usuario" />
-                        <TextField fx:id="txtUsuario" prefHeight="35.0" promptText="Ingrese su usuario" style="-fx-background-radius: 5;" />
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 11px;" text="Usuario" />
+                        <TextField fx:id="txtUsuario" prefHeight="35.0" promptText="Ingrese su usuario" style="-fx-background-radius: 5; -fx-border-color: #dcdde1; -fx-border-radius: 5;" />
                     </children>
                 </VBox>
 
                 <VBox spacing="5.0">
                     <children>
-                        <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e;" text="Contraseña" />
-                        <PasswordField fx:id="txtContrasena" prefHeight="35.0" promptText="Ingrese su contraseña" style="-fx-background-radius: 5;" />
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 11px;" text="Contraseña" />
+                        <PasswordField fx:id="txtContrasena" prefHeight="35.0" promptText="Ingrese su contraseña" style="-fx-background-radius: 5; -fx-border-color: #dcdde1; -fx-border-radius: 5;" />
                     </children>
                 </VBox>
 
@@ -45,6 +56,6 @@
             </children>
         </VBox>
 
-        <Label layoutX="295.0" layoutY="460.0" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 10px;" text="Acceso Seguro al Sistema Oracle XE" />
+        <Label layoutX="273.0" layoutY="515.0" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 10px;" text="Acceso Seguro al Sistema - Conexión Oracle XE" />
     </children>
 </AnchorPane>
